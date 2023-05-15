@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeConfigService } from './config/sequelize-config.service';
 import { databaseConfig } from './config/configuration';
 import { AuthModule } from './auth/auth.module';
+import { FurnitureModule } from './furniture/furniture.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    FurnitureModule,
   ],
 })
 export class AppModule {}
