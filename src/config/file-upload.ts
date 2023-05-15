@@ -1,7 +1,7 @@
 import { extname } from 'path';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { path } from 'app-root-path';
-import { ensureDir, writeFile } from 'fs-extra';
+import { ensureDir } from 'fs-extra';
 
 // Разрешить только изображения
 export const imageFileFilter = (req, file, callback) => {
