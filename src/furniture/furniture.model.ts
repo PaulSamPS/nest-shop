@@ -1,4 +1,4 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 @Table
 export class Furniture extends Model {
@@ -8,7 +8,7 @@ export class Furniture extends Model {
   @Column
   name: string;
 
-  @Column
+  @Column({ type: DataType.TEXT })
   description: string;
 
   @Column
@@ -26,7 +26,7 @@ export class Furniture extends Model {
   @Column({ defaultValue: false })
   new: boolean;
 
-  @Column
+  @Column({ defaultValue: 0 })
   rating: number;
 
   @Column({ defaultValue: 0 })
@@ -36,7 +36,7 @@ export class Furniture extends Model {
   frame_material: string;
 
   @Column
-  legs_material: string;
+  legs_material: number;
 
   @Column
   backrest_height: number;

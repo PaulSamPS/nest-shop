@@ -6,6 +6,7 @@ import { SequelizeConfigService } from './config/sequelize-config.service';
 import { databaseConfig } from './config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { FurnitureModule } from './furniture/furniture.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { FurnitureModule } from './furniture/furniture.module';
     UsersModule,
     AuthModule,
     FurnitureModule,
+    MulterModule.register({ dest: './uploads ' }),
   ],
 })
 export class AppModule {}
