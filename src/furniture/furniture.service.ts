@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Furniture } from './furniture.model';
 import { CreateFurnitureDto } from './dto/create-furniture.dto';
+import { FilesService } from '../files/files.service';
+import { MFile } from '../files/mfile.class';
+import { FileElementResponse } from '../files/dto/file-element-response.response';
 
 @Injectable()
 export class FurnitureService {
@@ -16,7 +19,7 @@ export class FurnitureService {
 
   async create(
     createFurnitureDtp: CreateFurnitureDto,
-    image: Express.Multer.File,
+    files: FileElementResponse[],
   ) {
     const furniture = new Furniture();
     const existingByUserName = await this.findOne({
@@ -24,7 +27,10 @@ export class FurnitureService {
     });
 
     if (existingByUserName) {
-      return { warningMessage: 'Товар уже существует' };
+      return {
+        message: 'Товар с таким именем уже существует',
+        status: HttpStatus.CONFLICT,
+      };
     }
 
     furniture.name = createFurnitureDtp.name;
@@ -38,7 +44,7 @@ export class FurnitureService {
     furniture.warranty_period = createFurnitureDtp.warranty_period;
     furniture.country_of_manufacture =
       createFurnitureDtp.country_of_manufacture;
-    furniture.images = image.filename;
+    furniture.images = JSON.stringify(files);
 
     return furniture.save();
   }

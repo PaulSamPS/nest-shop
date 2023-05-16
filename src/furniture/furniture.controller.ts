@@ -5,39 +5,34 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FurnitureService } from './furniture.service';
 import { CreateFurnitureDto } from './dto/create-furniture.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import {
-  editFileName,
-  imageFileFilter,
-  destination,
-} from '../config/file-upload';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesService } from '../files/files.service';
 
 @Controller('furniture')
 export class FurnitureController {
-  constructor(private readonly furnitureService: FurnitureService) {}
+  constructor(
+    private readonly furnitureService: FurnitureService,
+    private readonly fileService: FilesService,
+  ) {}
 
   @Post('/create-product')
   @HttpCode(HttpStatus.CREATED)
-  @Header('Content-type', 'multipart/form-data')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination,
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  createFurniture(
+  @Header('Content-type', 'application/json')
+  @UseInterceptors(FilesInterceptor('image'))
+  async createFurniture(
     @Body() createFurnitureDto: CreateFurnitureDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.furnitureService.create(createFurnitureDto, image);
+    const imagesArr = await this.fileService.convertToWebp(files);
+    const convertedImages = await this.fileService.saveFile(
+      imagesArr,
+      createFurnitureDto,
+    );
+    return this.furnitureService.create(createFurnitureDto, convertedImages);
   }
 }

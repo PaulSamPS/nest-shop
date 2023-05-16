@@ -7,6 +7,7 @@ import { databaseConfig } from './config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { FurnitureModule } from './furniture/furniture.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MulterModule } from '@nestjs/platform-express';
     AuthModule,
     FurnitureModule,
     MulterModule.register({ dest: './uploads ' }),
+    FilesModule,
   ],
 })
 export class AppModule {}
