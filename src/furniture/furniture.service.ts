@@ -2,8 +2,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Furniture } from './furniture.model';
 import { CreateFurnitureDto } from './dto/create-furniture.dto';
-import { FilesService } from '../files/files.service';
-import { MFile } from '../files/mfile.class';
 import { FileElementResponse } from '../files/dto/file-element-response.response';
 
 @Injectable()
