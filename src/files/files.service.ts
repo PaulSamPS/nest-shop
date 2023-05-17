@@ -19,7 +19,7 @@ export class FilesService {
     for (const file of files) {
       await writeFile(`${uploadFolder}/${file.originalname}`, file.buffer);
       res.push({
-        url: `${createFurnitureDtp.name}/${file.originalname}`,
+        url: `/static/${createFurnitureDtp.name}/${file.originalname}`,
         name: file.originalname,
       });
     }

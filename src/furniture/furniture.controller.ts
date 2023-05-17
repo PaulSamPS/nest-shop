@@ -12,6 +12,8 @@ import { FurnitureService } from './furniture.service';
 import { CreateFurnitureDto } from './dto/create-furniture.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from '../files/files.service';
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { CreateFurnitureRequest, CreateFurnitureResponse } from './types';
 
 @Controller('furniture')
 export class FurnitureController {
@@ -20,6 +22,8 @@ export class FurnitureController {
     private readonly fileService: FilesService,
   ) {}
 
+  @ApiBody({ type: CreateFurnitureRequest })
+  @ApiOkResponse({ type: CreateFurnitureResponse })
   @Post('/create-product')
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
