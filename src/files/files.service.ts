@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FileElementResponse } from './dto/file-element-response.response';
 import { path } from 'app-root-path';
 import { ensureDir, writeFile } from 'fs-extra';
-import { CreateFurnitureDto } from '../furniture/dto/create-furniture.dto';
+import { CreateProductDto } from '../product/dto/create-product.dto';
 import * as sharp from 'sharp';
 import { MFile } from './mfile.class';
 
@@ -10,7 +10,7 @@ import { MFile } from './mfile.class';
 export class FilesService {
   async saveFile(
     files: MFile[],
-    createFurnitureDtp: CreateFurnitureDto,
+    createFurnitureDtp: CreateProductDto,
   ): Promise<FileElementResponse[]> {
     const uploadFolder = `${path}/uploads/${createFurnitureDtp.name}`;
     await ensureDir(uploadFolder);

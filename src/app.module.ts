@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from '@users';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
-import { SequelizeConfigService } from './config/sequelize-config.service';
-import { databaseConfig } from './config/configuration';
-import { AuthModule } from './auth/auth.module';
-import { FurnitureModule } from './furniture/furniture.module';
+import { SequelizeConfigService, databaseConfig } from '@config';
+import { AuthModule } from '@auth';
+import { ProductModule } from '@product';
 import { MulterModule } from '@nestjs/platform-express';
-import { FilesModule } from './files/files.module';
+import { FilesModule } from '@files';
+import { ShoppingCartModule } from '@shopping-cart';
 
 @Module({
   imports: [
@@ -20,9 +20,10 @@ import { FilesModule } from './files/files.module';
     }),
     UsersModule,
     AuthModule,
-    FurnitureModule,
+    ProductModule,
     MulterModule.register({ dest: './uploads ' }),
     FilesModule,
+    ShoppingCartModule,
   ],
 })
 export class AppModule {}

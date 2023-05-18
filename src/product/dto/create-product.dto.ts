@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateFurnitureDto {
+export class CreateProductDto {
   @ApiProperty({ example: 1000 })
   @IsNotEmpty()
   readonly price: number;

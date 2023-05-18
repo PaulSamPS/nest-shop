@@ -1,7 +1,7 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 @Table
-export class Furniture extends Model {
+export class Product extends Model {
   @Column({ defaultValue: 0 })
   price: number;
 
@@ -21,7 +21,7 @@ export class Furniture extends Model {
   in_stock: number;
 
   @Column({ defaultValue: false })
-  bestsellers: boolean;
+  bestseller: boolean;
 
   @Column({ defaultValue: false })
   new: boolean;

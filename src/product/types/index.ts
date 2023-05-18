@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateFurnitureRequest {
+export class CreateProductRequest {
   @ApiProperty({ example: 5500 })
   price: number;
 
@@ -56,7 +56,7 @@ export class CreateFurnitureRequest {
   country_of_manufacture: string;
 }
 
-export class CreateFurnitureResponse {
+export class CreateProductResponse {
   @ApiProperty({
     example: {
       price: 25000,
@@ -69,7 +69,7 @@ export class CreateFurnitureResponse {
       id: 25,
       name: 'Bob',
       description:
-        'У нас не всегда получаеться написать красивое описания к каждому стулу, но мы выкладываем живые фото готовых изделий на которых Вы можете рассмотреть качество сделанной работы и почувствовать добрые чувства с которыми сделаны стулья на основе каркасов Konyshev. Мы единственная в России группа инженеров занимающаяся проектированием и производством каркасов для мягкой мебели.',
+        'У нас не всегда получаеться написать красивое описания к каждому стулу',
       dimensions: null,
       warranty_period: 12,
       images:
@@ -84,7 +84,7 @@ export class CreateFurnitureResponse {
       seat_width: 550,
     },
   })
-  furniture: {
+  product: {
     price: number;
     in_stock: number;
     bestsellers: boolean;
@@ -107,4 +107,9 @@ export class CreateFurnitureResponse {
     seat_width: number;
     seat_height: number;
   };
+}
+
+export interface IProductsQuery {
+  limit: string;
+  offset: string;
 }
