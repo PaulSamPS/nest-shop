@@ -16,7 +16,18 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from '@files';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
-import { CreateProductRequest, CreateProductResponse } from './types';
+import {
+  CreateProductRequest,
+  PaginateAndFiltersResponse,
+  FindOneResponse,
+  CreateProductResponse,
+  BestSellersResponse,
+  GetByNameRequest,
+  GetByNameResponse,
+  NewResponse,
+  SearchRequest,
+  SearchResponse,
+} from './types';
 
 @Controller('product')
 export class ProductController {
@@ -43,31 +54,39 @@ export class ProductController {
     return this.productService.create(createProductDto, convertedImages);
   }
 
+  @ApiOkResponse({ type: PaginateAndFiltersResponse })
   @Get()
   paginateAndFilter(@Query() query) {
     return this.productService.paginateAndFilter(query);
   }
 
+  @ApiOkResponse({ type: FindOneResponse })
   @Get('find/:id')
   getOne(@Param('id') id: string) {
     return this.productService.findOneByiD(id);
   }
 
+  @ApiOkResponse({ type: BestSellersResponse })
   @Get('bestseller')
   getBestseller() {
     return this.productService.bestsellers();
   }
 
+  @ApiOkResponse({ type: NewResponse })
   @Get('new')
   getNew() {
     return this.productService.new();
   }
 
+  @ApiBody({ type: SearchRequest })
+  @ApiOkResponse({ type: SearchResponse })
   @Post('search')
   search(@Body() { search }: { search: string }) {
     return this.productService.searchByString(search);
   }
 
+  @ApiBody({ type: GetByNameRequest })
+  @ApiOkResponse({ type: GetByNameResponse })
   @Post('name')
   getByName(@Body() { name }: { name: string }) {
     return this.productService.findOneByName(name);

@@ -28,8 +28,8 @@ export class CreateProductRequest {
   @ApiProperty({ example: 0 })
   rating: number;
 
-  @ApiProperty({ example: 5 })
-  weight: number;
+  @ApiProperty({ example: '5.5' })
+  weight: string;
 
   @ApiProperty({ example: 'Фанера' })
   frame_material: string;
@@ -58,56 +58,153 @@ export class CreateProductRequest {
 
 export class CreateProductResponse {
   @ApiProperty({
-    example: {
-      price: 25000,
-      in_stock: 10,
-      bestsellers: true,
-      new: true,
-      rating: 0,
-      weight: 5,
-      country_of_manufacture: 'Россия',
-      id: 25,
-      name: 'Bob',
-      description:
-        'У нас не всегда получаеться написать красивое описания к каждому стулу',
-      dimensions: null,
-      warranty_period: 12,
-      images:
-        '[{"url":"/static/Bob/044191c361179d10fc28112f76e8b20e.webp","name":"044191c361179d10fc28112f76e8b20e.webp"},{"url":"/static/Bob/db51dae53696d52c7245db2c05779460.webp","name":"db51dae53696d52c7245db2c05779460.webp"}]',
-      updatedAt: '2023-05-17T06:39:02.484Z',
-      createdAt: '2023-05-17T06:39:02.484Z',
-      frame_material: 'фанера',
-      legs_material: 'бук',
-      backrest_height: 500,
-      seat_height: 400,
-      seat_depth: 600,
-      seat_width: 550,
-    },
+    example: 25000,
   })
-  product: {
-    price: number;
-    in_stock: number;
-    bestsellers: boolean;
-    new: boolean;
-    rating: number;
-    weight: number;
-    country_of_manufacture: string;
-    id: number;
-    name: string;
-    description: string;
-    dimensions: string;
-    warranty_period: number;
-    images: string;
-    updatedAt: string;
-    createdAt: string;
-    frame_material: string;
-    legs_material: string;
-    backrest_height: number;
-    seat_depth: number;
-    seat_width: number;
-    seat_height: number;
-  };
+  price: number;
+
+  @ApiProperty({
+    example: 10,
+  })
+  in_stock: number;
+
+  @ApiProperty({
+    example: false,
+  })
+  bestsellers: boolean;
+
+  @ApiProperty({
+    example: false,
+  })
+  new: boolean;
+
+  @ApiProperty({
+    example: 0,
+  })
+  rating: number;
+
+  @ApiProperty({
+    example: '5.5',
+  })
+  weight: string;
+
+  @ApiProperty({
+    example: 'Россия',
+  })
+  country_of_manufacture: string;
+
+  @ApiProperty({
+    example: 1,
+  })
+  id: number;
+
+  @ApiProperty({
+    example: 'Bob',
+  })
+  name: string;
+
+  @ApiProperty({
+    example:
+      'У нас не всегда получаеться написать красивое описания к каждому стулу',
+  })
+  description: string;
+
+  @ApiProperty({
+    example: '70x70',
+  })
+  dimensions: string;
+
+  @ApiProperty({
+    example:
+      '[{"url":"/static/Bob/044191c361179d10fc28112f76e8b20e.webp","name":"044191c361179d10fc28112f76e8b20e.webp"},{"url":"/static/Bob/db51dae53696d52c7245db2c05779460.webp","name":"db51dae53696d52c7245db2c05779460.webp"}]',
+  })
+  images: string;
+
+  @ApiProperty({
+    example: '2023-05-17T06:39:02.484Z',
+  })
+  updatedAt: string;
+
+  @ApiProperty({
+    example: '2023-05-17T06:39:02.484Z',
+  })
+  createdAt: number;
+
+  @ApiProperty({
+    example: 'frame_material',
+  })
+  frame_material: string;
+
+  @ApiProperty({
+    example: 'бук',
+  })
+  legs_material: string;
+
+  @ApiProperty({
+    example: 500,
+  })
+  backrest_height: number;
+
+  @ApiProperty({
+    example: 400,
+  })
+  seat_height: number;
+
+  @ApiProperty({
+    example: 500,
+  })
+  seat_depth: number;
+
+  @ApiProperty({
+    example: 500,
+  })
+  seat_width: number;
 }
+
+export class PaginateAndFiltersResponse {
+  @ApiProperty({ example: 10 })
+  count: number;
+  @ApiProperty({ type: CreateProductRequest, isArray: true })
+  rows: CreateProductResponse[];
+}
+
+class BestSellers extends CreateProductResponse {
+  @ApiProperty({ example: true })
+  bestsellers: boolean;
+}
+
+export class BestSellersResponse {
+  @ApiProperty({ example: 10 })
+  count: number;
+  @ApiProperty({ type: CreateProductRequest, isArray: true })
+  rows: BestSellers;
+}
+
+class New extends CreateProductResponse {
+  @ApiProperty({ example: true })
+  new: boolean;
+}
+
+export class NewResponse {
+  @ApiProperty({ example: 10 })
+  count: number;
+
+  @ApiProperty({ type: CreateProductRequest, isArray: true })
+  rows: New;
+}
+
+export class SearchRequest extends CreateProductResponse {
+  @ApiProperty({ example: 'Dean' })
+  search: string;
+}
+export class SearchResponse extends CreateProductResponse {}
+
+export class GetByNameRequest extends CreateProductResponse {
+  @ApiProperty({ example: 'Dean' })
+  name: string;
+}
+export class GetByNameResponse extends CreateProductResponse {}
+
+export class FindOneResponse extends CreateProductResponse {}
 
 export interface IProductsQuery {
   limit: string;

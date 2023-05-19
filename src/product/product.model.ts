@@ -29,8 +29,8 @@ export class Product extends Model {
   @Column({ defaultValue: 0 })
   rating: number;
 
-  @Column({ defaultValue: 0 })
-  weight: number;
+  @Column({ defaultValue: '0' })
+  weight: string;
 
   @Column
   frame_material: string;

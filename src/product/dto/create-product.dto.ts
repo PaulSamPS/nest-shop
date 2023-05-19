@@ -37,9 +37,9 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Рейтинг, при создании 0' })
   readonly rating: number;
 
-  @ApiProperty({ example: 5 })
+  @ApiProperty({ example: '5.5' })
   @IsNotEmpty()
-  readonly weight: number;
+  readonly weight: string;
 
   @ApiProperty({ example: 'Бук' })
   readonly frame_material: string;
