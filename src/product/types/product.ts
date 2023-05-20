@@ -10,7 +10,9 @@ export class ProductRequest {
   @ApiProperty({ example: 'Описание' })
   description: string;
 
-  @ApiProperty({ example: 'Изображения продукта' })
+  @ApiProperty({
+    example: '/static/Toto23/044191c361179d10fc28112f76e8b20e.webp',
+  })
   images: string;
 
   @ApiProperty({ example: '70х80х120' })
@@ -114,8 +116,7 @@ export class ProductResponse {
   dimensions: string;
 
   @ApiProperty({
-    example:
-      '[{"url":"/static/Bob/044191c361179d10fc28112f76e8b20e.webp","name":"044191c361179d10fc28112f76e8b20e.webp"},{"url":"/static/Bob/db51dae53696d52c7245db2c05779460.webp","name":"db51dae53696d52c7245db2c05779460.webp"}]',
+    example: '/static/Toto23/044191c361179d10fc28112f76e8b20e.webp',
   })
   images: string;
 

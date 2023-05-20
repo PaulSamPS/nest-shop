@@ -14,7 +14,7 @@ export class ShoppingCartService {
     private readonly productsService: ProductService,
   ) {}
 
-  async findAll(userId: number | string): Promise<ShoppingCart[]> {
+  async findAll(userId: number): Promise<ShoppingCart[]> {
     return this.shoppingCartModel.findAll({ where: { userId } });
   }
 
@@ -68,7 +68,14 @@ export class ShoppingCartService {
     return { total_price: product.price };
   }
 
-  async remove(userId: number): Promise<void> {
+  async remove(productId: number): Promise<void> {
+    const product = await this.shoppingCartModel.findOne({
+      where: { productId },
+    });
+
+    return product.destroy();
+  }
+  async removeAll(userId: number): Promise<void> {
     await this.shoppingCartModel.destroy({ where: { userId } });
   }
 }
