@@ -8,6 +8,7 @@ import { ProductModule } from '@product';
 import { MulterModule } from '@nestjs/platform-express';
 import { FilesModule } from '@files';
 import { ShoppingCartModule } from '@shopping-cart';
+import { PaymentModule } from '@payment';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ShoppingCartModule } from '@shopping-cart';
     MulterModule.register({ dest: './uploads ' }),
     FilesModule,
     ShoppingCartModule,
+    PaymentModule,
   ],
 })
 export class AppModule {}
