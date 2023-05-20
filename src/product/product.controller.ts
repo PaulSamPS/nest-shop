@@ -17,10 +17,10 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from '@files';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import {
-  CreateProductRequest,
-  PaginateAndFiltersResponse,
+  ProductRequest,
+  PaginateAndFilters,
   FindOneResponse,
-  CreateProductResponse,
+  ProductResponse,
   BestSellersResponse,
   GetByNameRequest,
   GetByNameResponse,
@@ -36,8 +36,8 @@ export class ProductController {
     private readonly fileService: FilesService,
   ) {}
 
-  @ApiBody({ type: CreateProductRequest })
-  @ApiOkResponse({ type: CreateProductResponse })
+  @ApiBody({ type: ProductRequest })
+  @ApiOkResponse({ type: ProductResponse })
   @Post('/create')
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
@@ -54,7 +54,7 @@ export class ProductController {
     return this.productService.create(createProductDto, convertedImages);
   }
 
-  @ApiOkResponse({ type: PaginateAndFiltersResponse })
+  @ApiOkResponse({ type: PaginateAndFilters })
   @Get()
   paginateAndFilter(@Query() query) {
     return this.productService.paginateAndFilter(query);

@@ -3,10 +3,10 @@ import { Column, Model, Table } from 'sequelize-typescript';
 @Table
 export class ShoppingCart extends Model {
   @Column
-  userId: string;
+  userId: number;
 
   @Column
-  productId: string;
+  productId: number;
 
   @Column({ defaultValue: 0 })
   price: number;
@@ -20,8 +20,8 @@ export class ShoppingCart extends Model {
   @Column({ defaultValue: 0 })
   in_stock: number;
 
-  @Column({ defaultValue: 0 })
-  weight: number;
+  @Column({ defaultValue: '0' })
+  weight: string;
 
   @Column({ defaultValue: 0 })
   count: number;

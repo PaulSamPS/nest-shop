@@ -12,7 +12,12 @@ export class UsersService {
   ) {}
 
   findOne(filter: {
-    where: { id?: string; username?: string; email?: string; phone?: string };
+    where: {
+      id?: number;
+      username?: string;
+      email?: string;
+      phone?: string;
+    };
   }): Promise<User> {
     return this.userModel.findOne({ ...filter });
   }

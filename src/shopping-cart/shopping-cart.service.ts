@@ -9,7 +9,7 @@ import { AddToCartDto } from './dto/add-to-cart.dto';
 export class ShoppingCartService {
   constructor(
     @InjectModel(ShoppingCart)
-    private readonly shoppingCartModel: typeof ShoppingCart,
+    private shoppingCartModel: typeof ShoppingCart,
     private readonly usersService: UsersService,
     private readonly productsService: ProductService,
   ) {}
@@ -20,11 +20,55 @@ export class ShoppingCartService {
 
   async add(addToCartDto: AddToCartDto) {
     const cart = new ShoppingCart();
-    const user = this.usersService.findOne({
-      where: { username: addToCartDto.username },
+    const user = await this.usersService.findOne({
+      where: { id: addToCartDto.userId },
     });
     const product = await this.productsService.findOneByiD(
       addToCartDto.productId,
     );
+
+    cart.userId = user.id;
+    cart.productId = product.id;
+    cart.name = product.name;
+    cart.price = product.price;
+    cart.weight = product.weight;
+    cart.in_stock = product.in_stock;
+    cart.image = JSON.parse(product.images)[0].url;
+    cart.total_price = product.price;
+
+    return cart.save();
+  }
+
+  async updateCount(
+    count: number,
+    productId: number,
+  ): Promise<{ count: number }> {
+    await this.shoppingCartModel.update({ count }, { where: { productId } });
+
+    const product = await this.shoppingCartModel.findOne({
+      where: { productId },
+    });
+
+    return { count: product.count };
+  }
+
+  async updateTotalPrice(
+    total_price: number,
+    productId: number,
+  ): Promise<{ total_price: number }> {
+    await this.shoppingCartModel.update(
+      { total_price },
+      { where: { productId } },
+    );
+
+    const product = await this.shoppingCartModel.findOne({
+      where: { productId },
+    });
+
+    return { total_price: product.price };
+  }
+
+  async remove(userId: number): Promise<void> {
+    await this.shoppingCartModel.destroy({ where: { userId } });
   }
 }
