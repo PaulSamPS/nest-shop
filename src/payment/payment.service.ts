@@ -13,7 +13,7 @@ export class PaymentService {
         url: 'https://api.yookassa.ru/v3/payments',
         headers: {
           'Content-Type': 'application/json',
-          'Idempotence-Key': Date.now(),
+          'Idempotence-Key': uuid.v4(),
         },
         auth: {
           username: process.env.U_KASSA_USERNAME,
