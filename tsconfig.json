@@ -24,6 +24,7 @@
       "@users": ["users"],
       "@auth": ["auth"],
       "@shopping-cart": ["shopping-cart"],
+      "@payment": ["payment"],
     }
   }
 }

@@ -33,7 +33,9 @@
     "@types/express-session": "^1.17.7",
     "@types/fs-extra": "^11.0.1",
     "@types/passport": "^1.0.12",
+    "@types/uuid": "^9.0.1",
     "app-root-path": "^3.1.0",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "class-validator": "^0.14.0",
     "express-session": "^1.17.3",
@@ -46,7 +48,8 @@
     "sequelize": "^6.31.1",
     "sequelize-cli": "^6.6.0",
     "sequelize-typescript": "^2.1.5",
-    "sharp": "^0.32.1"
+    "sharp": "^0.32.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
