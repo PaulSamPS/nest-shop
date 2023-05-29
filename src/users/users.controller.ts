@@ -1,17 +1,16 @@
 import {
   Body,
   Controller,
-  Header,
+  Get,
   HttpCode,
   HttpStatus,
+  Ip,
   Post,
-  UseGuards,
   Request,
-  Get,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import {
@@ -19,28 +18,30 @@ import {
   LoginUserRequest,
   LoginUserResponse,
   LogoutUserResponse,
-  SignupResponse,
 } from './types';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { EnterCodeDto } from './dto/enter-code.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userServices: UsersService) {}
 
-  @ApiOkResponse({ type: SignupResponse })
-  @Post('/signup')
-  @HttpCode(HttpStatus.CREATED)
-  @Header('Content-type', 'application/json')
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userServices.create(createUserDto);
-  }
-
   @ApiBody({ type: LoginUserRequest })
   @ApiOkResponse({ type: LoginUserResponse })
-  @Post('/login')
+  @Post('/send-code')
+  // @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async sendCode(@Body() createUserDto: CreateUserDto, @Ip() ip: string) {
+    const phone = await this.userServices.create(createUserDto);
+    console.log(phone);
+    return await this.userServices.toSendCode({ phone, ip });
+  }
+
+  @Post('/enter-code')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  login(@Request() req) {
-    return { user: req.user, msg: 'Logged in' };
+  async enterCode(@Body() enterCode: EnterCodeDto, @Ip() ip: string) {
+    return await this.userServices.enterCode(enterCode, ip);
   }
 
   @ApiOkResponse({ type: LoginCheckResponse })

@@ -6,7 +6,7 @@ import { databaseConfig, SequelizeConfigService } from '@config';
 import { UsersModule, User, UsersService } from '@users';
 import * as bcrypt from 'bcrypt';
 
-describe('users controller', () => {
+describe('users service', () => {
   let app: INestApplication;
   let usersService: UsersService;
 
