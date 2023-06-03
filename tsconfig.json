@@ -22,7 +22,7 @@
       "@files": ["files"],
       "@config": ["config"],
       "@users": ["users"],
-      "@auth": ["auth"],
+      "@auth/*": ["auth/*"],
       "@shopping-cart": ["shopping-cart"],
       "@payment": ["payment"],
     }

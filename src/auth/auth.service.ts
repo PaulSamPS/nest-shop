@@ -1,12 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '@users';
+import { User, UsersService } from '@users';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UsersService) {}
 
-  async validateUser(phone: string) {
-    const user = await this.userService.findOne({ where: { phone } });
+  async validateUser(
+    phone: string,
+  ): Promise<{ userId: number; phone: string; email: string }> {
+    const user: User = await this.userService.findOne({ where: { phone } });
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -15,7 +17,6 @@ export class AuthService {
     return {
       userId: user.id,
       phone: user.phone,
-      username: user.username,
       email: user.email,
     };
   }

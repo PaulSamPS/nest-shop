@@ -22,7 +22,6 @@ export class UsersService {
   findOne(filter: {
     where: {
       id?: number;
-      username?: string;
       email?: string;
       phone?: string;
     };
@@ -31,8 +30,8 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<string> {
-    const user = new User();
-    const existingByUserPhone = await this.findOne({
+    const user: User = new User();
+    const existingByUserPhone: User = await this.findOne({
       where: { phone: createUserDto.phone },
     });
 
@@ -45,26 +44,32 @@ export class UsersService {
   }
 
   async toSendCode(codeDto: CodeDto): Promise<{ msg: string }> {
-    const userCode = new Code();
-    const ipAddress = new IpAddress();
-    const limit = new Limits();
+    const userCode: Code = new Code();
+    const ipAddress: IpAddress = new IpAddress();
+    const limit: Limits = new Limits();
 
-    const existingByIpAddress = await this.ipAddressModel.findOne({
+    const existingByIp: IpAddress = await this.ipAddressModel.findOne({
       where: { ip: codeDto.ip },
     });
 
-    const existingByUserId = await this.codeModel.findOne({
+    const existingByPhoneCode: Code = await this.codeModel.findOne({
       where: { phone: codeDto.phone },
     });
 
-    const code = Math.floor(1000 + Math.random() * 9000);
+    // Генерация кода
 
-    if (!existingByIpAddress) {
+    const code: number = Math.floor(1000 + Math.random() * 9000);
+
+    // Нет ip в базе
+
+    if (!existingByIp) {
       ipAddress.ip = codeDto.ip;
       await ipAddress.save();
     }
 
-    if (!existingByUserId && !existingByIpAddress) {
+    // Нет кода и нет ip в базе
+
+    if (!existingByPhoneCode && !existingByIp) {
       userCode.phone = codeDto.phone;
       userCode.code = code;
       await userCode.save();
@@ -74,85 +79,116 @@ export class UsersService {
       return { msg: 'Код отправлен' };
     }
 
-    if (
-      !existingByUserId &&
-      existingByIpAddress &&
-      existingByIpAddress.attempts === 0
-    ) {
-      return await limit.validateIp(existingByIpAddress.updatedAt);
+    // Нет кода и нет попыток отправки кода для ip
+
+    if (!existingByPhoneCode && existingByIp && existingByIp.attempts === 0) {
+      return await limit.validateIp(existingByIp.updatedAt);
     }
 
-    if (
-      !existingByUserId &&
-      existingByIpAddress &&
-      existingByIpAddress.attempts > 0
-    ) {
+    // Нет кода и есть попытки отправки кода для ip
+
+    if (!existingByPhoneCode && existingByIp && existingByIp.attempts > 0) {
       userCode.code = code;
       userCode.phone = codeDto.phone;
       await userCode.save();
 
-      existingByIpAddress.attempts -= 1;
-      await existingByIpAddress.save();
+      existingByIp.attempts -= 1;
+      await existingByIp.save();
 
       return { msg: 'Код отправлен' };
     }
 
-    const updateAtPlusTwoMinutes = addMinutes(existingByUserId.updatedAt, 2);
+    // Проверка времени последней отправки кода
+
+    const updateAtPlusTwoMinutes: Date = addMinutes(
+      existingByPhoneCode.updatedAt,
+      2,
+    );
 
     if (
       updateAtPlusTwoMinutes > new Date() &&
-      existingByIpAddress &&
-      existingByIpAddress.attempts > 0
+      existingByIp &&
+      existingByIp.attempts > 0
     ) {
       return await limit.validateTimeSendCode(updateAtPlusTwoMinutes);
     }
 
-    const updateAtPlusThreeHours = addHours(existingByIpAddress.updatedAt, 3);
+    // Проверка оставшихся попыток входа по ip
 
-    if (existingByIpAddress && existingByIpAddress.attempts > 0) {
-      existingByIpAddress.attempts -= 1;
-      await existingByIpAddress.save();
+    const updateAtPlusThreeHours: Date = addHours(existingByIp.updatedAt, 3);
+
+    if (existingByIp && existingByIp.attempts > 0) {
+      existingByIp.attempts -= 1;
+      await existingByIp.save();
     } else if (
-      existingByIpAddress.attempts === 0 &&
+      existingByIp.attempts === 0 &&
       updateAtPlusThreeHours > new Date()
     ) {
-      return await limit.validateIp(existingByIpAddress.updatedAt);
+      return await limit.validateIp(existingByIp.updatedAt);
     } else {
-      existingByIpAddress.attempts = 5;
-      existingByIpAddress.attempts -= 1;
-      await existingByIpAddress.save();
+      existingByIp.attempts = 5;
+      existingByIp.attempts -= 1;
+      await existingByIp.save();
     }
 
-    existingByUserId.code = code;
-    await existingByUserId.save();
+    // Если все хорошо то просто записывается новый код в базе
+
+    existingByPhoneCode.code = code;
+    await existingByPhoneCode.save();
 
     return { msg: 'Код отправлен' };
   }
 
-  async enterCode(enterCode: EnterCodeDto, ip: string) {
-    const ipAddress = new IpAddress();
+  async enterCode(
+    enterCode: EnterCodeDto,
+    ip: string,
+  ): Promise<{ user: User; msg: string } | { msg: string; user?: undefined }> {
+    const ipAddress: IpAddress = new IpAddress();
 
-    const findUserCode = await this.codeModel.findOne({
+    const findUserCode: Code = await this.codeModel.findOne({
       where: { phone: enterCode.phone },
     });
 
-    const existingByIpAddress = await this.ipAddressModel.findOne({
+    const updateAtPlusFiveMinutes: Date = addMinutes(findUserCode.updatedAt, 5);
+
+    const existingByIpAddress: IpAddress = await this.ipAddressModel.findOne({
       where: { ip },
     });
+
+    if (!findUserCode) {
+      return { msg: 'Получите новый код' };
+    }
+
+    // Если нет ip в базе то записывается новый
 
     if (!existingByIpAddress) {
       ipAddress.ip = ip;
       await ipAddress.save();
     }
 
-    if (findUserCode && findUserCode.code === enterCode.code) {
-      const user = await this.userModel.findOne({
+    // Если код найден , совпадает и срок действия не истек то возвращает пользователя
+
+    if (
+      findUserCode &&
+      findUserCode.code === enterCode.code &&
+      updateAtPlusFiveMinutes > new Date()
+    ) {
+      const user: User = await this.userModel.findOne({
         where: { phone: enterCode.phone },
       });
       await this.codeModel.destroy({ where: { phone: enterCode.phone } });
       existingByIpAddress.attempts = 5;
       await existingByIpAddress.save();
       return { user, msg: 'Вход выполнен' };
+    } else if (
+      findUserCode &&
+      findUserCode.code === enterCode.code &&
+      updateAtPlusFiveMinutes < new Date()
+    ) {
+      await this.codeModel.destroy({ where: { phone: enterCode.phone } });
+      existingByIpAddress.attempts -= 1;
+      await existingByIpAddress.save();
+      return { msg: 'Код просрочен, повторите отправку кода' };
     } else {
       return { msg: 'Невереый код' };
     }
