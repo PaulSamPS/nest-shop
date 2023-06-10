@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ShoppingCart } from './shopping-cart.model';
-import { UsersService } from '@users';
+import { User, UsersService } from '@users';
 import { ProductService } from '@product';
 import { AddToCartDto } from './dto/add-to-cart.dto';
+import { Product } from '../product/product.model';
 
 @Injectable()
 export class ShoppingCartService {
@@ -18,12 +19,12 @@ export class ShoppingCartService {
     return this.shoppingCartModel.findAll({ where: { userId } });
   }
 
-  async add(addToCartDto: AddToCartDto) {
-    const cart = new ShoppingCart();
-    const user = await this.usersService.findOne({
+  async add(addToCartDto: AddToCartDto): Promise<ShoppingCart> {
+    const cart: ShoppingCart = new ShoppingCart();
+    const user: User = await this.usersService.findOne({
       where: { id: addToCartDto.userId },
     });
-    const product = await this.productsService.findOneByiD(
+    const product: Product = await this.productsService.findOneByiD(
       addToCartDto.productId,
     );
 
@@ -39,37 +40,40 @@ export class ShoppingCartService {
     return cart.save();
   }
 
-  async updateCount(
-    count: number,
+  async increaseCountAndTotalPrice(
     productId: number,
-  ): Promise<{ count: number }> {
-    await this.shoppingCartModel.update({ count }, { where: { productId } });
-
-    const product = await this.shoppingCartModel.findOne({
+  ): Promise<{ count: number; total_price: number }> {
+    const product: ShoppingCart = await this.shoppingCartModel.findOne({
       where: { productId },
     });
 
-    return { count: product.count };
+    product.count += 1;
+    product.total_price = product.count * product.price;
+    await product.save();
+
+    return { count: product.count, total_price: product.total_price };
   }
 
-  async updateTotalPrice(
-    total_price: number,
+  async decreaseCountAndTotalPrice(
     productId: number,
-  ): Promise<{ total_price: number }> {
-    await this.shoppingCartModel.update(
-      { total_price },
-      { where: { productId } },
-    );
-
-    const product = await this.shoppingCartModel.findOne({
+  ): Promise<{ count: number; total_price: number } | { msg: string }> {
+    const product: ShoppingCart = await this.shoppingCartModel.findOne({
       where: { productId },
     });
 
-    return { total_price: product.price };
+    if (product.count > 1) {
+      product.count -= 1;
+      product.total_price = product.count * product.price;
+      await product.save();
+
+      return { count: product.count, total_price: product.total_price };
+    }
+
+    return { msg: 'Минимальное колличество 1' };
   }
 
   async remove(productId: number): Promise<void> {
-    const product = await this.shoppingCartModel.findOne({
+    const product: ShoppingCart = await this.shoppingCartModel.findOne({
       where: { productId },
     });
 

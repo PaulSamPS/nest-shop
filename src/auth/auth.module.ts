@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from '@users';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
 import { SessionSerializer } from './session.serializer';
+import { AuthController } from './auth.controller';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from '@users';
+import { Code } from '../users/code.model';
+import { IpAddress } from '../users/ip-address.model';
 
 @Module({
-  imports: [UsersModule, PassportModule.register({ session: true })],
-  providers: [AuthService, LocalStrategy, SessionSerializer],
+  imports: [SequelizeModule.forFeature([User, Code, IpAddress])],
+  providers: [AuthService, SessionSerializer],
+  controllers: [AuthController],
 })
 export class AuthModule {}

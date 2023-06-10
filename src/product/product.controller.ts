@@ -28,6 +28,9 @@ import {
   SearchRequest,
   SearchResponse,
 } from './types';
+import { Product } from './product.model';
+import { MFile } from '../files/mfile.class';
+import { FileElementResponse } from '../files/dto/file-element-response.response';
 
 @Controller('product')
 export class ProductController {
@@ -45,36 +48,36 @@ export class ProductController {
   async createFurniture(
     @Body() createProductDto: CreateProductDto,
     @UploadedFiles() files: Express.Multer.File[],
-  ) {
-    const imagesArr = await this.fileService.convertToWebp(files);
-    const convertedImages = await this.fileService.saveFile(
-      imagesArr,
-      createProductDto,
-    );
+  ): Promise<Product | { message: string; status: HttpStatus }> {
+    const imagesArr: MFile[] = await this.fileService.convertToWebp(files);
+    const convertedImages: FileElementResponse[] =
+      await this.fileService.saveFile(imagesArr, createProductDto);
     return this.productService.create(createProductDto, convertedImages);
   }
 
   @ApiOkResponse({ type: PaginateAndFilters })
   @Get()
-  paginateAndFilter(@Query() query) {
+  paginateAndFilter(
+    @Query() query,
+  ): Promise<{ count: number; rows: Product[] }> {
     return this.productService.paginateAndFilter(query);
   }
 
   @ApiOkResponse({ type: FindOneResponse })
   @Get('find/:id')
-  getOne(@Param('id') id: string) {
+  getOne(@Param('id') id: string): Promise<Product> {
     return this.productService.findOneByiD(id);
   }
 
   @ApiOkResponse({ type: BestSellersResponse })
   @Get('bestseller')
-  getBestseller() {
+  getBestseller(): Promise<{ count: number; rows: Product[] }> {
     return this.productService.bestsellers();
   }
 
   @ApiOkResponse({ type: NewResponse })
   @Get('new')
-  getNew() {
+  getNew(): Promise<{ count: number; rows: Product[] }> {
     return this.productService.new();
   }
 

@@ -9,15 +9,9 @@ import {
 } from '@nestjs/common';
 import { ShoppingCartService } from './shopping-cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
-import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
-import {
-  AddToCartResponse,
-  GetAllResponse,
-  UpdateCountRequest,
-  UpdateCountResponse,
-  UpdateTotalPriceRequest,
-  UpdateTotalPriceResponse,
-} from './types';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { AddToCartResponse, GetAllResponse } from './types';
+import { ShoppingCart } from './shopping-cart.model';
 
 @Controller('shopping-cart')
 export class ShoppingCartController {
@@ -25,43 +19,37 @@ export class ShoppingCartController {
 
   @ApiOkResponse({ type: [GetAllResponse] })
   @Get(':id')
-  getAll(@Param('id') userId: number) {
+  getAll(@Param('id') userId: number): Promise<ShoppingCart[]> {
     return this.shoppingCartService.findAll(userId);
   }
 
   @ApiOkResponse({ type: AddToCartResponse })
   @Post('/add')
-  addToCart(@Body() addToCart: AddToCartDto) {
+  addToCart(@Body() addToCart: AddToCartDto): Promise<ShoppingCart> {
     return this.shoppingCartService.add(addToCart);
   }
 
-  @ApiOkResponse({ type: UpdateCountResponse })
-  @ApiBody({ type: UpdateCountRequest })
-  @Patch('/count/:id')
-  updateCount(
-    @Body() { count }: { count: number },
+  @Patch('/count/increase/:id')
+  increaseCountAndTotalPrice(
     @Param('id') productId: number,
-  ) {
-    return this.shoppingCartService.updateCount(count, productId);
+  ): Promise<{ count: number; total_price: number }> {
+    return this.shoppingCartService.increaseCountAndTotalPrice(productId);
   }
 
-  @ApiOkResponse({ type: UpdateTotalPriceResponse })
-  @ApiBody({ type: UpdateTotalPriceRequest })
-  @Patch('/total-price/:id')
-  updateTotalPrice(
-    @Body() { total_price }: { total_price: number },
+  @Patch('/count/decrease/:id')
+  decreaseCountAndTotalPrice(
     @Param('id') productId: number,
-  ) {
-    return this.shoppingCartService.updateTotalPrice(total_price, productId);
+  ): Promise<{ count: number; total_price: number } | { msg: string }> {
+    return this.shoppingCartService.decreaseCountAndTotalPrice(productId);
   }
 
   @Delete('remove-one/:id')
-  removeOne(@Param('id') productId: number) {
+  removeOne(@Param('id') productId: number): Promise<void> {
     return this.shoppingCartService.remove(productId);
   }
 
   @Delete('remove-all/:id')
-  removeAll(@Param('id') userId: number) {
+  removeAll(@Param('id') userId: number): Promise<void> {
     return this.shoppingCartService.removeAll(userId);
   }
 }

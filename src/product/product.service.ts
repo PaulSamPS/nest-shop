@@ -16,8 +16,8 @@ export class ProductService {
   async paginateAndFilter(
     query: IProductsQuery,
   ): Promise<{ count: number; rows: Product[] }> {
-    const limit = +query.limit;
-    const offset = +query.offset;
+    const limit: number = +query.limit;
+    const offset: number = +query.offset;
     return this.productModel.findAndCountAll({
       limit,
       offset,
@@ -56,9 +56,11 @@ export class ProductService {
   async create(
     createProductDto: CreateProductDto,
     files: FileElementResponse[],
-  ) {
-    const product = new Product();
-    const existingByUserName = await this.findOneByName(createProductDto.name);
+  ): Promise<Product | { message: string; status: HttpStatus }> {
+    const product: Product = new Product();
+    const existingByUserName: Product = await this.findOneByName(
+      createProductDto.name,
+    );
 
     if (existingByUserName) {
       return {
