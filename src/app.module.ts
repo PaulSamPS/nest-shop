@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from '@users';
+import { UserModule } from '@users';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@auth/auth.module';
@@ -8,7 +8,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { FilesModule } from '@files';
 import { ShoppingCartModule } from '@shopping-cart';
 import { PaymentModule } from '@payment';
-import configurations from './config';
+import configurations from '@config';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -35,8 +36,9 @@ import configurations from './config';
       isGlobal: true,
       load: [configurations],
     }),
-    UsersModule,
     AuthModule,
+    UserModule,
+    MailModule,
     ProductModule,
     MulterModule.register({ dest: './uploads ' }),
     FilesModule,

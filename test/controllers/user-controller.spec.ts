@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { databaseConfig, SequelizeConfigService } from '@config';
-import { UsersModule, User } from '@users';
+import { UserModule, User } from 'users';
 import * as bcrypt from 'bcrypt';
 import * as request from 'supertest';
 
@@ -20,7 +20,7 @@ describe('users controller', () => {
         ConfigModule.forRoot({
           load: [databaseConfig],
         }),
-        UsersModule,
+        UserModule,
       ],
     }).compile();
     app = testModule.createNestApplication();

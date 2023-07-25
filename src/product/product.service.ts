@@ -2,9 +2,9 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './product.model';
 import { CreateProductDto } from './dto/create-product.dto';
-import { FileElementResponse } from '../files/dto/file-element-response.response';
 import { Op } from 'sequelize';
 import { IProductsQuery } from './types';
+import { FileElementResponse } from '../files/dto/file-element-response.response';
 
 @Injectable()
 export class ProductService {

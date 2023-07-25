@@ -3,12 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { databaseConfig, SequelizeConfigService } from '@config';
-import { UsersModule, User, UsersService } from '@users';
+import { UserModule, User, UserService } from 'users';
 import * as bcrypt from 'bcrypt';
 
 describe('users service', () => {
   let app: INestApplication;
-  let usersService: UsersService;
+  let usersService: UserService;
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
@@ -20,11 +20,11 @@ describe('users service', () => {
         ConfigModule.forRoot({
           load: [databaseConfig],
         }),
-        UsersModule,
+        UserModule,
       ],
     }).compile();
 
-    usersService = testModule.get<UsersService>(UsersService);
+    usersService = testModule.get<UserService>(UserService);
     app = testModule.createNestApplication();
     await app.init();
   });

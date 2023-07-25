@@ -14,7 +14,7 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { FilesService } from '@files';
+import { FilesService } from '../files';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import {
   ProductRequest,

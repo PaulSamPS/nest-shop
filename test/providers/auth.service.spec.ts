@@ -5,7 +5,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { databaseConfig, SequelizeConfigService } from '@config';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '@auth';
-import { User } from '@users';
+import { User } from 'users';
 import * as bcrypt from 'bcrypt';
 
 const mockedUser = {

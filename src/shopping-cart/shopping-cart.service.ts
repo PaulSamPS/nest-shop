@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ShoppingCart } from './shopping-cart.model';
-import { User, UsersService } from '@users';
+import { User, UserService } from '@users';
 import { ProductService } from '@product';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { Product } from '../product/product.model';
@@ -11,7 +11,7 @@ export class ShoppingCartService {
   constructor(
     @InjectModel(ShoppingCart)
     private shoppingCartModel: typeof ShoppingCart,
-    private readonly usersService: UsersService,
+    private readonly usersService: UserService,
     private readonly productsService: ProductService,
   ) {}
 

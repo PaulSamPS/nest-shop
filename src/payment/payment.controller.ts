@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { MakePaymentDto } from './dto/make-payment.dto';
 import { ApiOkResponse } from '@nestjs/swagger';

@@ -1,3 +1,3 @@
-export * from './users.module';
-export * from './users.service';
-export * from './users.model';
+export * from './user.module';
+export * from './user.service';
+export * from './user.model';

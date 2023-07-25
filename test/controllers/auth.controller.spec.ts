@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { databaseConfig, SequelizeConfigService } from '@config';
-import { User } from '@users';
+import { User } from 'users';
 import * as bcrypt from 'bcrypt';
 import * as request from 'supertest';
 import * as session from 'express-session';

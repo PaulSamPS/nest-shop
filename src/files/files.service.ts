@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { FileElementResponse } from './dto/file-element-response.response';
 import { path } from 'app-root-path';
 import { ensureDir, writeFile } from 'fs-extra';
-import { CreateProductDto } from '../product/dto/create-product.dto';
 import * as sharp from 'sharp';
 import { MFile } from './mfile.class';
+import { CreateProductDto } from '../product/dto/create-product.dto';
 
 @Injectable()
 export class FilesService {
