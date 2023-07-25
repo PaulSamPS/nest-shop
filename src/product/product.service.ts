@@ -4,7 +4,7 @@ import { Product } from './product.model';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Op } from 'sequelize';
 import { IProductsQuery } from './types';
-import { FileElementResponse } from '../files/dto/file-element-response.response';
+import { FileElementResponse } from '@/files/dto/file-element-response.response';
 
 @Injectable()
 export class ProductService {

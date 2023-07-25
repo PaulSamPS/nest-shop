@@ -1,12 +1,12 @@
 import * as bcrypt from 'bcrypt';
-import { User, UserService } from '@users';
+import { User, UserService } from '@/user';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '@/user/dto/create-user.dto';
 import * as crypto from 'crypto';
 import * as process from 'process';
-import { RedirectInterceptor } from '../config/redirectInterceptor';
-import { MailService } from '../mail/mail.service';
-import { UserDto } from '../users/dto/user.dto';
+import { RedirectInterceptor } from '@/config/redirectInterceptor';
+import { MailService } from '@/mail/mail.service';
+import { UserDto } from '@/user/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -50,9 +50,7 @@ export class AuthService {
     return null;
   }
 
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<User | { warningMessage: string } | { msg: string }> {
+  async create(createUserDto: CreateUserDto): Promise<{ message: string }> {
     const user = new User();
 
     const existingByUsername = await this.userService.findOne({
@@ -60,7 +58,7 @@ export class AuthService {
     });
 
     if (existingByUsername) {
-      return { warningMessage: 'Пользователь с таким именем уже существует' };
+      return { message: 'Пользователь с таким именем уже существует' };
     }
 
     const existingByUserEmail = await this.userService.findOne({
@@ -68,7 +66,7 @@ export class AuthService {
     });
 
     if (existingByUserEmail) {
-      return { warningMessage: 'Пользователь с таким email уже существует' };
+      return { message: 'Пользователь с таким email уже существует' };
     }
 
     const activationLink = crypto.randomBytes(32).toString('hex');
@@ -84,22 +82,24 @@ export class AuthService {
       `${process.env.API_URL}/activate/${activationLink}`,
     );
 
-    return { msg: 'Ссылка для активации отправлена на указанный вами email' };
+    return {
+      message: 'Ссылка для активации отправлена на указанный вами email',
+    };
   }
 
-  async activateAccount(activationLink: string) {
+  async activateAccount(activationLink: string): Promise<RedirectInterceptor> {
     const user = await this.userService.findOne({
       where: { activationLink: activationLink },
     });
 
     if (!user) {
-      throw new HttpException('Некорректная ссылка', HttpStatus.FORBIDDEN);
+      throw new HttpException('Некорректная ссылка', HttpStatus.BAD_REQUEST);
     }
 
     user.isActivated = true;
     user.activationLink = null;
     await user.save();
 
-    return new RedirectInterceptor(`${process.env.API_URL} + /login`);
+    return new RedirectInterceptor(`${process.env.API_URL}/auth/login`);
   }
 }

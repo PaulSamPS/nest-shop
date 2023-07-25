@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from '@/app/app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';

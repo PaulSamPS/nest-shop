@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from '@users';
+import { UserModule } from '@/user';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from '@auth/auth.module';
-import { ProductModule } from '@product';
+import { AuthModule } from '@/auth/auth.module';
+import { ProductModule } from '@/product';
 import { MulterModule } from '@nestjs/platform-express';
-import { FilesModule } from '@files';
-import { ShoppingCartModule } from '@shopping-cart';
-import { PaymentModule } from '@payment';
-import configurations from '@config';
-import { MailModule } from './mail/mail.module';
+import { FilesModule } from '@/files';
+import { ShoppingCartModule } from '@/shopping-cart';
+import { PaymentModule } from '@/payment';
+import configurations from '@/config';
+import { MailModule } from '@/mail/mail.module';
 
 @Module({
   imports: [

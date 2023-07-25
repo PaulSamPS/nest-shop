@@ -9,7 +9,7 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -18,13 +18,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@product": ["product"],
-      "@files": ["files"],
-      "@config": ["config"],
-      "@users": ["users"],
-      "@auth/*": ["auth/*"],
-      "@shopping-cart": ["shopping-cart"],
-      "@payment": ["payment"],
+      "@/*": ["./src/*"]
     }
   }
 }

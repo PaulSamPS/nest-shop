@@ -10,16 +10,16 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { LocalAuthGuard } from '@auth/local-auth.guard';
-import { AuthenticatedGuard } from '@auth/authenticated.guard';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthService } from '@auth/auth.service';
-import { UserDto } from '../users/dto/user.dto';
+import { LocalAuthGuard } from './local-auth.guard';
+import { AuthenticatedGuard } from './authenticated.guard';
+import { CreateUserDto } from '@/user/dto/create-user.dto';
+import { AuthService } from './auth.service';
+import { UserDto } from '@/user/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authServices: AuthService) {}
-  @Post('/signup')
+  @Post('/registration')
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
   createUser(@Body() createUserDto: CreateUserDto) {

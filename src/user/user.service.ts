@@ -7,9 +7,9 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
-import { MailService } from '../mail/mail.service';
+import { MailService } from '@/mail/mail.service';
 import * as process from 'process';
-import { RedirectInterceptor } from '../config/redirectInterceptor';
+import { RedirectInterceptor } from '@/config/redirectInterceptor';
 import * as crypto from 'crypto';
 
 @Injectable()

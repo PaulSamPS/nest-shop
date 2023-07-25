@@ -4,7 +4,7 @@ import { path } from 'app-root-path';
 import { ensureDir, writeFile } from 'fs-extra';
 import * as sharp from 'sharp';
 import { MFile } from './mfile.class';
-import { CreateProductDto } from '../product/dto/create-product.dto';
+import { CreateProductDto } from '@/product/dto/create-product.dto';
 
 @Injectable()
 export class FilesService {

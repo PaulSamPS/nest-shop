@@ -14,7 +14,7 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { FilesService } from '../files';
+import { FilesService } from '@/files';
 import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 import {
   ProductRequest,
@@ -29,8 +29,8 @@ import {
   SearchResponse,
 } from './types';
 import { Product } from './product.model';
-import { MFile } from '../files/mfile.class';
-import { FileElementResponse } from '../files/dto/file-element-response.response';
+import { MFile } from '@/files/mfile.class';
+import { FileElementResponse } from '@/files/dto/file-element-response.response';
 
 @Controller('product')
 export class ProductController {
