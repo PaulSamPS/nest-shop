@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Redirect,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { AuthenticatedGuard } from './authenticated.guard';
 import { CreateUserDto } from '@/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { UserDto } from '@/user/dto/user.dto';
+import * as process from 'process';
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +29,7 @@ export class AuthController {
   }
 
   @Get('/activate/:activationLink')
+  @Redirect(`${process.env.API_URL}/auth/login`)
   @HttpCode(HttpStatus.OK)
   activateUserAccount(@Param('activationLink') activationLink: string) {
     return this.authServices.activateAccount(activationLink);

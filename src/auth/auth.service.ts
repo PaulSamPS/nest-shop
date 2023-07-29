@@ -58,7 +58,10 @@ export class AuthService {
     });
 
     if (existingByUsername) {
-      return { message: 'Пользователь с таким именем уже существует' };
+      throw new HttpException(
+        'Пользователь с таким именем уже существует',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const existingByUserEmail = await this.userService.findOne({
@@ -66,7 +69,10 @@ export class AuthService {
     });
 
     if (existingByUserEmail) {
-      return { message: 'Пользователь с таким email уже существует' };
+      throw new HttpException(
+        'Пользователь с таким email уже существует',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const activationLink = crypto.randomBytes(32).toString('hex');
@@ -83,7 +89,8 @@ export class AuthService {
     );
 
     return {
-      message: 'Ссылка для активации отправлена на указанный вами email',
+      message:
+        'Ссылка для активации аккаунта отправлена на указанный вами email',
     };
   }
 
