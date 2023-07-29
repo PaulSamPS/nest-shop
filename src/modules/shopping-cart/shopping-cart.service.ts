@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ShoppingCart } from './shopping-cart.model';
-import { User, UserService } from '@/user';
-import { ProductService } from '@/product';
+import { User, UserService } from '@/modules/user';
+import { ProductService } from '@/modules/product';
 import { AddToCartDto } from './dto/add-to-cart.dto';
-import { Product } from '@/product/product.model';
+import { Product } from '@/modules/product/product.model';
 
 @Injectable()
 export class ShoppingCartService {

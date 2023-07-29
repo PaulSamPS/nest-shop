@@ -13,10 +13,11 @@ import {
 } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
-import { CreateUserDto } from '@/user/dto/create-user.dto';
+import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { UserDto } from '@/user/dto/user.dto';
+import { UserDto } from '@/modules/user/dto/user.dto';
 import * as process from 'process';
+import { AppMessage } from '@/common/constants';
 
 @Controller('auth')
 export class AuthController {
@@ -39,7 +40,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   login(@Request() req: { user: UserDto }) {
-    return { user: req.user, msg: 'Logged in' };
+    return { user: req.user, message: AppMessage.LOGGED_IN };
   }
 
   @Get('/login-check')
@@ -49,8 +50,8 @@ export class AuthController {
   }
 
   @Get('/logout')
-  logout(@Request() req): { msg: string } {
+  logout(@Request() req): { message: string } {
     req.session.destroy();
-    return { msg: 'session has ended' };
+    return { message: AppMessage.SESSION_HAS_ENDED };
   }
 }

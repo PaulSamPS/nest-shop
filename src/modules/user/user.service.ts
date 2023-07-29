@@ -7,10 +7,12 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
-import { MailService } from '@/mail/mail.service';
+import { MailService } from '@/modules/mail/mail.service';
 import * as process from 'process';
 import { RedirectInterceptor } from '@/config/redirectInterceptor';
 import * as crypto from 'crypto';
+import { AppMessage } from '@/common/constants/appMessage';
+import { AppError } from '@/common/constants/appError';
 
 @Injectable()
 export class UserService {
@@ -38,7 +40,7 @@ export class UserService {
     });
 
     if (!findUser) {
-      return new ForbiddenException('Пользователь с таким email не найден');
+      return new ForbiddenException(AppError.USER_EMAIL_NOT_EXIST);
     }
 
     const token = crypto.randomBytes(32).toString('hex');
@@ -49,10 +51,10 @@ export class UserService {
 
     await this.mailService.sendResetLink(
       createUserDto.email,
-      `http://localhost:5000/users/check-password-token/${token}`,
+      `${process.env.BASE_URL}/users/check-password-token/${token}`,
     );
 
-    return { msg: 'Сыылка отправлена' };
+    return { message: AppMessage.LINK_HAS_BEEN_SENT };
   }
 
   async checkResetPasswordToken(resetPasswordToken: string) {
@@ -61,16 +63,18 @@ export class UserService {
     });
 
     if (!user) {
-      throw new HttpException('Пользователь не найден', HttpStatus.FORBIDDEN);
+      throw new HttpException(AppError.USER_NOT_FOUND, HttpStatus.FORBIDDEN);
     }
 
     if (user && new Date(user.resetPasswordTokenExp) > new Date()) {
       throw new HttpException(
-        'Время жизни ссылки истекло, отправьте новую ссылку для восстановления пароля',
+        AppError.LINK_HAS_BEEN_EXPIRED,
         HttpStatus.FORBIDDEN,
       );
     }
 
-    return new RedirectInterceptor(`${process.env.API_URL} + /password-change`);
+    return new RedirectInterceptor(
+      `${process.env.BASE_URL} + /password-change`,
+    );
   }
 }

@@ -1,12 +1,14 @@
 import * as bcrypt from 'bcrypt';
-import { User, UserService } from '@/user';
+import { User, UserService } from 'src/modules/user';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from '@/user/dto/create-user.dto';
+import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import * as crypto from 'crypto';
 import * as process from 'process';
 import { RedirectInterceptor } from '@/config/redirectInterceptor';
-import { MailService } from '@/mail/mail.service';
-import { UserDto } from '@/user/dto/user.dto';
+import { MailService } from '@/modules/mail/mail.service';
+import { UserDto } from '@/modules/user/dto/user.dto';
+import { AppError } from '@/common/constants/appError';
+import { AppMessage } from '@/common/constants/appMessage';
 
 @Injectable()
 export class AuthService {
@@ -15,25 +17,28 @@ export class AuthService {
     private readonly mailService: MailService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<UserDto> {
+  async validateUser(
+    username: string,
+    password: string,
+  ): Promise<UserDto | HttpException> {
     const user = await this.userService.findOne({ where: { username } });
 
     if (!user) {
-      throw new HttpException(
-        'Пользователь не найден',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException(AppError.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
     }
 
     const passwordValid = await bcrypt.compare(password, user.password);
 
     if (!passwordValid) {
-      throw new HttpException('Неверный пароль', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        AppError.INCORRECT_PASSWORD,
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (!user.isActivated) {
       throw new HttpException(
-        'Аккаунт не активирован',
+        AppError.ACCOUNT_NOT_ACTIVATED,
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -50,7 +55,9 @@ export class AuthService {
     return null;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<{ message: string }> {
+  async create(
+    createUserDto: CreateUserDto,
+  ): Promise<{ message: string } | HttpException> {
     const user = new User();
 
     const existingByUsername = await this.userService.findOne({
@@ -58,10 +65,7 @@ export class AuthService {
     });
 
     if (existingByUsername) {
-      throw new HttpException(
-        'Пользователь с таким именем уже существует',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(AppError.USERNAME_EXIST, HttpStatus.BAD_REQUEST);
     }
 
     const existingByUserEmail = await this.userService.findOne({
@@ -70,7 +74,7 @@ export class AuthService {
 
     if (existingByUserEmail) {
       throw new HttpException(
-        'Пользователь с таким email уже существует',
+        AppError.USER_EMAIL_EXIST,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -85,28 +89,29 @@ export class AuthService {
 
     await this.mailService.sendActivationLink(
       createUserDto.email,
-      `${process.env.API_URL}/activate/${activationLink}`,
+      `${process.env.BASE_URL}/activate/${activationLink}`,
     );
 
     return {
-      message:
-        'Ссылка для активации аккаунта отправлена на указанный вами email',
+      message: AppMessage.ACTIVATION_LINK_SENT,
     };
   }
 
-  async activateAccount(activationLink: string): Promise<RedirectInterceptor> {
+  async activateAccount(
+    activationLink: string,
+  ): Promise<RedirectInterceptor | HttpException> {
     const user = await this.userService.findOne({
       where: { activationLink: activationLink },
     });
 
     if (!user) {
-      throw new HttpException('Некорректная ссылка', HttpStatus.BAD_REQUEST);
+      throw new HttpException(AppError.INCORRECT_LINK, HttpStatus.BAD_REQUEST);
     }
 
     user.isActivated = true;
     user.activationLink = null;
     await user.save();
 
-    return new RedirectInterceptor(`${process.env.API_URL}/auth/login`);
+    return new RedirectInterceptor(`${process.env.BASE_URL}/auth/login`);
   }
 }

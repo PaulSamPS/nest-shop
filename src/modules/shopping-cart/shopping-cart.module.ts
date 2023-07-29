@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ShoppingCartService } from './shopping-cart.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ShoppingCart } from './shopping-cart.model';
-import { UserModule } from '@/user';
-import { ProductModule } from '@/product';
+import { UserModule } from '@/modules/user';
+import { ProductModule } from '@/modules/product';
 import { ShoppingCartController } from './shopping-cart.controller';
 
 @Module({

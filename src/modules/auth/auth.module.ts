@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SessionSerializer } from './session.serializer';
-import { UserModule } from '@/user';
+import { UserModule } from 'src/modules/user';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
-import { MailService } from '@/mail/mail.service';
+import { MailService } from '@/modules/mail/mail.service';
 import { AuthController } from './auth.controller';
 
 @Module({
