@@ -2,10 +2,11 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { MakePaymentDto } from './dto/make-payment.dto';
 import axios from 'axios';
 import uuid from 'uuid';
-import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PaymentService {
+  constructor(private readonly configService: ConfigService) {}
   async makePayment(makePaymentDto: MakePaymentDto) {
     try {
       const { data } = await axios({
@@ -16,8 +17,8 @@ export class PaymentService {
           'Idempotence-Key': uuid.v4(),
         },
         auth: {
-          username: process.env.U_KASSA_USERNAME,
-          password: process.env.U_KASSA_SECRET_KEY,
+          username: this.configService.get('u_kassa_username'),
+          password: this.configService.get('u_kassa_secret'),
         },
         data: {
           amount: {

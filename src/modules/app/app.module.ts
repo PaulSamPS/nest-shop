@@ -10,6 +10,7 @@ import { ShoppingCartModule } from 'src/modules/shopping-cart';
 import { PaymentModule } from 'src/modules/payment';
 import configurations from 'src/config';
 import { MailModule } from '@/modules/mail/mail.module';
+import { TokenModule } from '@/modules/token/token.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { MailModule } from '@/modules/mail/mail.module';
     FilesModule,
     ShoppingCartModule,
     PaymentModule,
+    TokenModule,
   ],
 })
 export class AppModule {}

@@ -1,23 +1,24 @@
-import * as process from 'process';
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
+  constructor(private readonly configService: ConfigService) {}
   transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
+    host: this.configService.get('smtp_host'),
+    port: this.configService.get('smtp_port'),
     secure: true,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
+      user: this.configService.get('smtp_user'),
+      pass: this.configService.get('smtp_password'),
     },
   });
   async sendActivationLink(to: string, link: string) {
     await this.transporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: this.configService.get('smtp_user'),
       to,
-      subject: 'Активация аккаунта на ' + process.env.BASE_URL,
+      subject: 'Активация аккаунта на ' + this.configService.get('base_url'),
       text: '',
       html: `
               <div>
@@ -30,9 +31,9 @@ export class MailService {
 
   async sendResetLink(to: string, link: string) {
     await this.transporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: this.configService.get('smtp_user'),
       to,
-      subject: 'Восстановление пароля ' + process.env.BASE_URL,
+      subject: 'Восстановление пароля ' + this.configService.get('base_url'),
       text: '',
       html: `
               <div>

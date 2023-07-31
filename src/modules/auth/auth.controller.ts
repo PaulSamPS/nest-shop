@@ -11,42 +11,43 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { LocalAuthGuard } from './local-auth.guard';
-import { AuthenticatedGuard } from './authenticated.guard';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { UserDto } from '@/modules/user/dto/user.dto';
 import * as process from 'process';
-import { AppMessage } from '@/common/constants';
+import { AppMessage } from '@/common/constants/appMessage';
+import { TokenService } from '@/modules/token/token.service';
+import { JwtAuthGuard } from '@/guards/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authServices: AuthService) {}
-  @Post('/registration')
+  constructor(
+    private readonly authServices: AuthService,
+    private readonly tokenService: TokenService,
+  ) {}
+  @Post('registration')
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.authServices.create(createUserDto);
   }
 
-  @Get('/activate/:activationLink')
+  @Get('activate/:activationLink')
   @Redirect(`${process.env.API_URL}/auth/login`)
   @HttpCode(HttpStatus.OK)
   activateUserAccount(@Param('activationLink') activationLink: string) {
     return this.authServices.activateAccount(activationLink);
   }
 
-  @Post('/login')
-  @UseGuards(LocalAuthGuard)
+  @Post('login')
   @HttpCode(HttpStatus.OK)
-  login(@Request() req: { user: UserDto }) {
-    return { user: req.user, message: AppMessage.LOGGED_IN };
+  login(@Body() createUserDto: CreateUserDto) {
+    return this.authServices.login(createUserDto);
   }
 
-  @Get('/login-check')
-  @UseGuards(AuthenticatedGuard)
-  loginCheck(@Request() req) {
-    return req.user;
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  check() {
+    return true;
   }
 
   @Get('/logout')

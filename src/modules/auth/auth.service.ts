@@ -3,31 +3,36 @@ import { User, UserService } from 'src/modules/user';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import * as crypto from 'crypto';
-import * as process from 'process';
 import { RedirectInterceptor } from '@/config/redirectInterceptor';
 import { MailService } from '@/modules/mail/mail.service';
-import { UserDto } from '@/modules/user/dto/user.dto';
 import { AppError } from '@/common/constants/appError';
 import { AppMessage } from '@/common/constants/appMessage';
+import { TokenService } from '@/modules/token/token.service';
+import { LoginResultDto } from '@/modules/auth/types/loginResult';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly mailService: MailService,
+    private readonly tokenService: TokenService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(
-    username: string,
-    password: string,
-  ): Promise<UserDto | HttpException> {
-    const user = await this.userService.findOne({ where: { username } });
+  async login(createUserDto: CreateUserDto): Promise<LoginResultDto> {
+    const existUser = await this.userService.findOne({
+      where: { email: createUserDto.email },
+    });
 
-    if (!user) {
+    if (!existUser) {
       throw new HttpException(AppError.USER_NOT_FOUND, HttpStatus.UNAUTHORIZED);
     }
 
-    const passwordValid = await bcrypt.compare(password, user.password);
+    const passwordValid = await bcrypt.compare(
+      createUserDto.password,
+      existUser.password,
+    );
 
     if (!passwordValid) {
       throw new HttpException(
@@ -36,19 +41,23 @@ export class AuthService {
       );
     }
 
-    if (!user.isActivated) {
+    if (!existUser.isActivated) {
       throw new HttpException(
         AppError.ACCOUNT_NOT_ACTIVATED,
         HttpStatus.UNAUTHORIZED,
       );
     }
 
-    if (user && passwordValid) {
+    if (existUser && passwordValid) {
+      const user = await this.userService.findOnePublic({
+        where: { email: existUser.email },
+      });
+      const token = await this.tokenService.generateJwtToken(existUser.email);
+
       return {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        isActivated: user.isActivated,
+        user,
+        token,
+        message: AppMessage.LOGGED_IN,
       };
     }
 
@@ -89,7 +98,7 @@ export class AuthService {
 
     await this.mailService.sendActivationLink(
       createUserDto.email,
-      `${process.env.BASE_URL}/activate/${activationLink}`,
+      `${this.configService.get('base_url')}/activate/${activationLink}`,
     );
 
     return {
@@ -112,6 +121,8 @@ export class AuthService {
     user.activationLink = null;
     await user.save();
 
-    return new RedirectInterceptor(`${process.env.BASE_URL}/auth/login`);
+    return new RedirectInterceptor(
+      `${this.configService.get('base_url')}/auth/login`,
+    );
   }
 }

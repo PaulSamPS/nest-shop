@@ -7,4 +7,5 @@ export const AppError = {
   INCORRECT_PASSWORD: 'Неверный пароль',
   USER_NOT_FOUND: 'Пользователь не найден',
   LINK_HAS_BEEN_EXPIRED: 'Время жизни ссылки истекло',
+  INVALID_CREDENTIALS: 'Неверные учетные данные',
 };

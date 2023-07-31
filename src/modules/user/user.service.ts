@@ -8,11 +8,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { MailService } from '@/modules/mail/mail.service';
-import * as process from 'process';
 import { RedirectInterceptor } from '@/config/redirectInterceptor';
 import * as crypto from 'crypto';
 import { AppMessage } from '@/common/constants/appMessage';
 import { AppError } from '@/common/constants/appError';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
@@ -20,6 +20,7 @@ export class UserService {
     @InjectModel(User)
     private userModel: typeof User,
     private readonly mailService: MailService,
+    private readonly configService: ConfigService,
   ) {}
 
   findOne(filter: {
@@ -32,6 +33,30 @@ export class UserService {
     };
   }): Promise<User> {
     return this.userModel.findOne({ ...filter });
+  }
+
+  exclude = [
+    'password',
+    'activationLink',
+    'resetPasswordToken',
+    'resetPasswordTokenExp',
+    'isActivated',
+  ];
+  findOnePublic(filter: {
+    where: {
+      id?: number;
+      username?: string;
+      email?: string;
+      resetPasswordToken?: string;
+      activationLink?: string;
+    };
+  }): Promise<User> {
+    return this.userModel.findOne({
+      ...filter,
+      attributes: {
+        exclude: this.exclude,
+      },
+    });
   }
 
   async sendResetPasswordLink(createUserDto: CreateUserDto) {
@@ -51,7 +76,9 @@ export class UserService {
 
     await this.mailService.sendResetLink(
       createUserDto.email,
-      `${process.env.BASE_URL}/users/check-password-token/${token}`,
+      `${this.configService.get(
+        'base_url',
+      )}/users/check-password-token/${token}`,
     );
 
     return { message: AppMessage.LINK_HAS_BEEN_SENT };
@@ -74,7 +101,7 @@ export class UserService {
     }
 
     return new RedirectInterceptor(
-      `${process.env.BASE_URL} + /password-change`,
+      `${this.configService.get('base_url')} + /password-change`,
     );
   }
 }

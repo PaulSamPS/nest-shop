@@ -7,6 +7,9 @@ export default () => ({
   db_password: process.env.DATABASE_PASSWORD,
   db_name: process.env.DATABASE_NAME,
   u_kassa_secret: process.env.U_KASSA_SECRET_KEY,
-  u_kassa_name: process.env.U_KASSA_USERNAME,
+  u_kassa_username: process.env.U_KASSA_USERNAME,
   session_secret: process.env.SESSION_SECRET,
+  secret_jwt: process.env.SECRET_JWT,
+  expired_jwt: process.env.EXPIRED_JWT,
+  base_url: process.env.BASE_URL,
 });
