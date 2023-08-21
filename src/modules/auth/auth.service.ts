@@ -10,6 +10,7 @@ import { AppMessage } from '@/common/constants/appMessage';
 import { TokenService } from '@/modules/token/token.service';
 import { LoginResultDto } from '@/modules/auth/types/loginResult';
 import { ConfigService } from '@nestjs/config';
+import { AuthUserDto } from '@/modules/auth/dto/authUserDto';
 
 @Injectable()
 export class AuthService {
@@ -20,9 +21,9 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async login(createUserDto: CreateUserDto): Promise<LoginResultDto> {
+  async login(authUserDto: AuthUserDto): Promise<LoginResultDto> {
     const existUser = await this.userService.findOne({
-      where: { email: createUserDto.email },
+      where: { email: authUserDto.email },
     });
 
     if (!existUser) {
@@ -30,7 +31,7 @@ export class AuthService {
     }
 
     const passwordValid = await bcrypt.compare(
-      createUserDto.password,
+      authUserDto.password,
       existUser.password,
     );
 
@@ -48,20 +49,16 @@ export class AuthService {
       );
     }
 
-    if (existUser && passwordValid) {
-      const user = await this.userService.findOnePublic({
-        where: { email: existUser.email },
-      });
-      const token = await this.tokenService.generateJwtToken(existUser.email);
+    const user = await this.userService.findOnePublic({
+      where: { email: existUser.email },
+    });
+    const token = await this.tokenService.generateJwtToken(user);
 
-      return {
-        user,
-        token,
-        message: AppMessage.LOGGED_IN,
-      };
-    }
-
-    return null;
+    return {
+      user,
+      token,
+      message: AppMessage.LOGGED_IN,
+    };
   }
 
   async create(

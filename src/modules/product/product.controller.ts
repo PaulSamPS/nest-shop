@@ -51,7 +51,11 @@ export class ProductController {
   ): Promise<Product | { message: string; status: HttpStatus }> {
     const imagesArr: MFile[] = await this.fileService.convertToWebp(files);
     const convertedImages: FileElementResponse[] =
-      await this.fileService.saveFile(imagesArr, createProductDto);
+      await this.fileService.saveFile(
+        imagesArr,
+        createProductDto.name,
+        'products',
+      );
     return this.productService.create(createProductDto, convertedImages);
   }
 

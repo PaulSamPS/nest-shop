@@ -4,22 +4,22 @@ import { path } from 'app-root-path';
 import { ensureDir, writeFile } from 'fs-extra';
 import * as sharp from 'sharp';
 import { MFile } from './mfile.class';
-import { CreateProductDto } from '@/modules/product/dto/create-product.dto';
 
 @Injectable()
 export class FilesService {
   async saveFile(
     files: MFile[],
-    createFurnitureDtp: CreateProductDto,
+    name: string,
+    folder: string,
   ): Promise<FileElementResponse[]> {
-    const uploadFolder = `${path}/uploads/${createFurnitureDtp.name}`;
+    const uploadFolder = `${path}/uploads/${folder}/${name}`;
     await ensureDir(uploadFolder);
     const res: FileElementResponse[] = [];
 
     for (const file of files) {
       await writeFile(`${uploadFolder}/${file.originalname}`, file.buffer);
       res.push({
-        url: `/static/${createFurnitureDtp.name}/${file.originalname}`,
+        url: `/static/${name}/${file.originalname}`,
         name: file.originalname,
       });
     }

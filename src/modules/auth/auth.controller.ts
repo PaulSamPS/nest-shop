@@ -17,6 +17,7 @@ import * as process from 'process';
 import { AppMessage } from '@/common/constants/appMessage';
 import { TokenService } from '@/modules/token/token.service';
 import { JwtAuthGuard } from '@/guards/jwt.guard';
+import { AuthUserDto } from '@/modules/auth/dto/authUserDto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +25,7 @@ export class AuthController {
     private readonly authServices: AuthService,
     private readonly tokenService: TokenService,
   ) {}
-  @Post('registration')
+  @Post('sign-up')
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -38,10 +39,10 @@ export class AuthController {
     return this.authServices.activateAccount(activationLink);
   }
 
-  @Post('login')
+  @Post('sign-in')
   @HttpCode(HttpStatus.OK)
-  login(@Body() createUserDto: CreateUserDto) {
-    return this.authServices.login(createUserDto);
+  login(@Body() authUserDto: AuthUserDto) {
+    return this.authServices.login(authUserDto);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from 'src/modules/user';
+import { User, UserModule } from 'src/modules/user';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@/modules/auth/auth.module';
@@ -11,6 +11,8 @@ import { PaymentModule } from 'src/modules/payment';
 import configurations from 'src/config';
 import { MailModule } from '@/modules/mail/mail.module';
 import { TokenModule } from '@/modules/token/token.module';
+import { ProfileModule } from '@/modules/profile/profile.module';
+import { Profile } from '@/modules/profile/model/profile.model';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { TokenModule } from '@/modules/token/token.module';
           charset: 'utf8',
           collate: 'utf8_general_ci',
         },
-        models: [],
+        models: [User, Profile],
       }),
     }),
     ConfigModule.forRoot({
@@ -46,6 +48,7 @@ import { TokenModule } from '@/modules/token/token.module';
     ShoppingCartModule,
     PaymentModule,
     TokenModule,
+    ProfileModule,
   ],
 })
 export class AppModule {}
