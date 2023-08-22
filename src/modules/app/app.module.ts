@@ -13,6 +13,7 @@ import { MailModule } from '@/modules/mail/mail.module';
 import { TokenModule } from '@/modules/token/token.module';
 import { ProfileModule } from '@/modules/profile/profile.module';
 import { Profile } from '@/modules/profile/model/profile.model';
+import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { Profile } from '@/modules/profile/model/profile.model';
           charset: 'utf8',
           collate: 'utf8_general_ci',
         },
-        models: [User, Profile],
+        models: [User, Profile, ShoppingCart],
       }),
     }),
     ConfigModule.forRoot({

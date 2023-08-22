@@ -19,16 +19,45 @@ export class ShoppingCartService {
     return this.shoppingCartModel.findAll({ where: { userId } });
   }
 
-  async add(addToCartDto: AddToCartDto): Promise<ShoppingCart> {
-    const cart: ShoppingCart = new ShoppingCart();
-    const user: User = await this.usersService.findOne({
-      where: { id: addToCartDto.userId },
+  async get(userId: number) {
+    const shoppingCart = new ShoppingCart();
+    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+      where: { user: userId },
     });
+
+    if (!exitingShoppingCart) {
+      return shoppingCart.save();
+    }
+
+    return exitingShoppingCart;
+  }
+
+  async add(addToCartDto: AddToCartDto, userId: number): Promise<ShoppingCart> {
+    const cart: ShoppingCart = new ShoppingCart();
+
     const product: Product = await this.productsService.findOneByiD(
       addToCartDto.productId,
     );
 
-    cart.userId = user.id;
+    const exitingShoppingCart = await this.shoppingCartModel.findAll({
+      where: { user: userId },
+    });
+
+    if (!exitingShoppingCart) {
+      const newCart = {
+        user: userId,
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        weight: product.weight,
+        in_stock: product.in_stock,
+        image: JSON.parse(product.images)[0].url,
+        total_price: product.price,
+      };
+
+      return await this.shoppingCartModel.create(newCart);
+    }
+
     cart.productId = product.id;
     cart.name = product.name;
     cart.price = product.price;

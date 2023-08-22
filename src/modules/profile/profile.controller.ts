@@ -36,10 +36,9 @@ export class ProfileController {
     @UploadedFiles() file: Express.Multer.File[],
   ) {
     const user = request.user;
-    console.log(user);
     const imagesArr: MFile[] = await this.fileService.convertToWebp(file);
     const convertedImage: FileElementResponse[] =
-      await this.fileService.saveFile(imagesArr, user.username, 'profile');
+      await this.fileService.saveFile(imagesArr, user, 'profile');
     return this.profileService.create(user, profileDto, convertedImage);
   }
 

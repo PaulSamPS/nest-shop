@@ -1,7 +1,11 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { User } from '@/modules/user';
 
 @Table
 export class ShoppingCart extends Model {
+  @ForeignKey(() => User)
+  user: User;
+
   @Column
   userId: number;
 

@@ -4,7 +4,7 @@ import { User } from '@/modules/user';
 @Table
 export class Profile extends Model {
   @ForeignKey(() => User)
-  use: User;
+  user: User;
 
   @Column
   avatar: string;

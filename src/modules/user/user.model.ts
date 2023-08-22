@@ -1,5 +1,13 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  HasMany,
+  HasOne,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { Profile } from '@/modules/profile/model/profile.model';
+import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
 
 @Table
 export class User extends Model {
@@ -24,9 +32,15 @@ export class User extends Model {
   @Column({ defaultValue: false })
   isActivated: boolean;
 
-  @HasMany(() => Profile, {
+  @HasOne(() => Profile, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  profile: Profile[];
+  profile: Profile;
+
+  @HasMany(() => ShoppingCart, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  shoppingCart: ShoppingCart[];
 }

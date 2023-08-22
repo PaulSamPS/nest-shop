@@ -8,25 +8,40 @@ import { FileElementResponse } from '@/modules/files/dto/file-element-response.r
 @Injectable()
 export class ProfileService {
   constructor(
-    @InjectModel(Profile) private readonly profileRepository: typeof Profile,
+    @InjectModel(Profile) private readonly profileModel: typeof Profile,
   ) {}
   async create(
     user: UserDto,
     profileDto: ProfileDto,
     file: FileElementResponse[],
   ) {
-    const profile = {
-      user: user.id,
-      firstname: profileDto.firstname,
-      lastname: profileDto.lastname,
-      avatar: JSON.stringify(file),
-      country: profileDto.country,
-      region: profileDto.region,
-      city: profileDto.city,
-    };
+    const existingProfile = await this.profileModel.findOne({
+      where: { user: user.id },
+    });
 
-    await this.profileRepository.create(profile);
+    if (!existingProfile) {
+      const newProfile = {
+        user: user.id,
+        firstname: profileDto.firstname,
+        lastname: profileDto.lastname,
+        avatar: JSON.stringify(file),
+        country: profileDto.country,
+        region: profileDto.region,
+        city: profileDto.city,
+      };
 
-    return profile;
+      return await this.profileModel.create(newProfile);
+    }
+
+    existingProfile.firstname = profileDto.firstname;
+    existingProfile.lastname = profileDto.lastname;
+    existingProfile.country = profileDto.country;
+    existingProfile.region = profileDto.region;
+    existingProfile.city = profileDto.city;
+    existingProfile.address = profileDto.address;
+    existingProfile.avatar = JSON.stringify(file);
+    await existingProfile.save();
+
+    return existingProfile;
   }
 }

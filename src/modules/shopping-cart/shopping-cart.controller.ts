@@ -6,27 +6,38 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ShoppingCartService } from './shopping-cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { AddToCartResponse, GetAllResponse } from './types';
 import { ShoppingCart } from './shopping-cart.model';
+import { JwtAuthGuard } from '@/guards/jwt.guard';
 
 @Controller('shopping-cart')
 export class ShoppingCartController {
   constructor(private readonly shoppingCartService: ShoppingCartService) {}
 
   @ApiOkResponse({ type: [GetAllResponse] })
-  @Get(':id')
-  getAll(@Param('id') userId: number): Promise<ShoppingCart[]> {
-    return this.shoppingCartService.findAll(userId);
+  @Get('get')
+  getAll(@Req() request): Promise<ShoppingCart> {
+    const userId = request.user.id;
+
+    return this.shoppingCartService.get(userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: AddToCartResponse })
   @Post('/add')
-  addToCart(@Body() addToCart: AddToCartDto): Promise<ShoppingCart> {
-    return this.shoppingCartService.add(addToCart);
+  addToCart(
+    @Body() addToCart: AddToCartDto,
+    @Req() request,
+  ): Promise<ShoppingCart> {
+    const userId = request.user.id;
+
+    return this.shoppingCartService.add(addToCart, userId);
   }
 
   @Patch('/count/increase/:id')
