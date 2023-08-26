@@ -40,27 +40,27 @@ export class ShoppingCartController {
     return this.shoppingCartService.add(addToCart, userId);
   }
 
-  @Patch('/count/increase/:id')
-  increaseCountAndTotalPrice(
-    @Param('id') productId: number,
-  ): Promise<{ count: number; total_price: number }> {
-    return this.shoppingCartService.increaseCountAndTotalPrice(productId);
-  }
-
-  @Patch('/count/decrease/:id')
-  decreaseCountAndTotalPrice(
-    @Param('id') productId: number,
-  ): Promise<{ count: number; total_price: number } | { msg: string }> {
-    return this.shoppingCartService.decreaseCountAndTotalPrice(productId);
-  }
-
-  @Delete('remove-one/:id')
-  removeOne(@Param('id') productId: number): Promise<void> {
-    return this.shoppingCartService.remove(productId);
-  }
-
-  @Delete('remove-all/:id')
-  removeAll(@Param('id') userId: number): Promise<void> {
-    return this.shoppingCartService.removeAll(userId);
-  }
+  // @Patch('/count/increase/:id')
+  // increaseCountAndTotalPrice(
+  //   @Param('id') productId: number,
+  // ): Promise<{ count: number; total_price: number }> {
+  //   return this.shoppingCartService.increaseCountAndTotalPrice(productId);
+  // }
+  //
+  // @Patch('/count/decrease/:id')
+  // decreaseCountAndTotalPrice(
+  //   @Param('id') productId: number,
+  // ): Promise<{ count: number; total_price: number } | { msg: string }> {
+  //   return this.shoppingCartService.decreaseCountAndTotalPrice(productId);
+  // }
+  //
+  // @Delete('remove-one/:id')
+  // removeOne(@Param('id') productId: number): Promise<void> {
+  //   return this.shoppingCartService.remove(productId);
+  // }
+  //
+  // @Delete('remove-all/:id')
+  // removeAll(@Param('id') userId: number): Promise<void> {
+  //   return this.shoppingCartService.removeAll(userId);
+  // }
 }

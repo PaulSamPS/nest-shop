@@ -38,9 +38,9 @@ export class User extends Model {
   })
   profile: Profile;
 
-  @HasMany(() => ShoppingCart, {
+  @HasOne(() => ShoppingCart, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  shoppingCart: ShoppingCart[];
+  shoppingCart: ShoppingCart;
 }
