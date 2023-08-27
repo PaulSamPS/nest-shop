@@ -76,15 +76,19 @@ export class ShoppingCartService {
           (p: ProductCartDto) => p.productId === product.id,
         );
 
-      productInTheCart.count += 1;
+      if (productInTheCart.in_stock > 0) {
+        productInTheCart.count += 1;
 
-      productInTheCart.in_stock -= 1;
+        productInTheCart.in_stock -= 1;
 
-      exitingShoppingCart.total_price += product.price;
+        exitingShoppingCart.total_price += product.price;
 
-      exitingShoppingCart.changed('products', true);
+        exitingShoppingCart.changed('products', true);
 
-      return await exitingShoppingCart.save();
+        return await exitingShoppingCart.save();
+      }
+
+      return exitingShoppingCart;
     }
 
     const newProduct: ProductCartDto = {

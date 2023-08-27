@@ -21,4 +21,7 @@ export class ProfileDto {
 
   @IsString()
   address: string;
+
+  @IsString()
+  oldAvatar: string;
 }

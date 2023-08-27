@@ -4,6 +4,8 @@ import { Profile } from '@/modules/profile/model/profile.model';
 import { ProfileDto } from '@/modules/profile/dto/profile.dto';
 import { UserDto } from '@/modules/user/dto/user.dto';
 import { FileElementResponse } from '@/modules/files/dto/file-element-response.response';
+import * as fs from 'fs-extra';
+import { path } from 'app-root-path';
 
 @Injectable()
 export class ProfileService {
@@ -38,8 +40,8 @@ export class ProfileService {
     existingProfile.country = profileDto.country;
     existingProfile.region = profileDto.region;
     existingProfile.city = profileDto.city;
-    existingProfile.address = profileDto.address;
     existingProfile.avatar = JSON.stringify(file);
+    existingProfile.address = profileDto.address;
     await existingProfile.save();
 
     return existingProfile;
