@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Patch,
   Post,
   Query,
@@ -19,8 +18,8 @@ import { FileElementResponse } from '@/modules/files/dto/file-element-response.r
 import { MFile } from '@/modules/files/mfile.class';
 import { FilesService } from '@/modules/files';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import * as fs from 'fs-extra';
-import { path } from 'app-root-path';
+import { UserDto } from '@/modules/user/dto/user.dto';
+import { Profile } from '@/modules/profile/model/profile.model';
 
 @Controller('profile')
 export class ProfileController {
@@ -36,39 +35,16 @@ export class ProfileController {
     @Body() profileDto: ProfileDto,
     @Req() request,
     @UploadedFiles() file: Express.Multer.File[],
-  ) {
-    const user = request.user;
-
-    const removeFile = async () => {
-      await fs.emptyDir(`${path}/uploads/profile/${user.username}`),
-        (err) => {
-          if (err) console.error(err);
-          console.log('Файл Удалён');
-        };
-    };
+  ): Promise<Profile> {
+    const user: UserDto = request.user;
 
     if (file) {
-      await removeFile();
+      await this.fileService.removeFile(user.username);
     }
-
     const imagesArr: MFile[] = await this.fileService.convertToWebp(file);
     const convertedImage: FileElementResponse[] =
       await this.fileService.saveFile(imagesArr, user.username, 'profile');
+
     return this.profileService.create(user, profileDto, convertedImage);
-  }
-
-  @Get('get')
-  get() {
-    return;
-  }
-
-  @Patch('update')
-  update() {
-    return;
-  }
-
-  @Delete()
-  delete(@Query('id') id: string) {
-    return;
   }
 }

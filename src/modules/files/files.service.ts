@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FileElementResponse } from './dto/file-element-response.response';
 import { path } from 'app-root-path';
-import { ensureDir, writeFile } from 'fs-extra';
+import { emptyDir, ensureDir, writeFile } from 'fs-extra';
 import { MFile } from './mfile.class';
 import * as sharp from 'sharp';
 import * as uuid from 'uuid';
@@ -41,5 +41,13 @@ export class FilesService {
       }
     }
     return imagesArr;
+  }
+
+  async removeFile(username: string) {
+    await emptyDir(`${path}/uploads/profile/${username}`),
+      (err) => {
+        if (err) console.error(err);
+        console.log('Файл Удалён');
+      };
   }
 }

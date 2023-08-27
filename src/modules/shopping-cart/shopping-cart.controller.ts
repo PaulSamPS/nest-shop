@@ -15,6 +15,7 @@ import { ApiOkResponse } from '@nestjs/swagger';
 import { AddToCartResponse, GetAllResponse } from './types';
 import { ShoppingCart } from './shopping-cart.model';
 import { JwtAuthGuard } from '@/guards/jwt.guard';
+import { UserDto } from '@/modules/user/dto/user.dto';
 
 @Controller('shopping-cart')
 export class ShoppingCartController {
@@ -22,8 +23,8 @@ export class ShoppingCartController {
 
   @ApiOkResponse({ type: [GetAllResponse] })
   @Get('get')
-  getAll(@Req() request): Promise<ShoppingCart> {
-    const userId = request.user.id;
+  getAll(@Req() request: { user: UserDto }): Promise<ShoppingCart> {
+    const userId: number = request.user.id;
 
     return this.shoppingCartService.get(userId);
   }
@@ -33,7 +34,7 @@ export class ShoppingCartController {
   @Post('add-product')
   addToCart(
     @Body() addToCart: AddToCartDto,
-    @Req() request,
+    @Req() request: { user: UserDto },
   ): Promise<ShoppingCart | { message: string }> {
     const userId = request.user.id;
 
@@ -44,7 +45,7 @@ export class ShoppingCartController {
   @Patch('increase-count')
   increaseCountAndTotalPrice(
     @Body() addToCart: AddToCartDto,
-    @Req() request,
+    @Req() request: { user: UserDto },
   ): Promise<ShoppingCart> {
     const userId = request.user.id;
 
@@ -57,7 +58,7 @@ export class ShoppingCartController {
   @Patch('decrease-count')
   decreaseCountAndTotalPrice(
     @Body() addToCart: AddToCartDto,
-    @Req() request,
+    @Req() request: { user: UserDto },
   ): Promise<ShoppingCart> {
     const userId = request.user.id;
 
@@ -68,16 +69,22 @@ export class ShoppingCartController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('remove-product/:id')
-  removeOne(@Param('id') id, @Req() request) {
-    console.log(Number(id));
+  @Delete('remove-product')
+  removeOne(
+    @Body() id: { productId: number },
+    @Req() request: { user: UserDto },
+  ) {
+    const userId = request.user.id;
+    const { productId } = id;
+
+    return this.shoppingCartService.remove(productId, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('remove-all')
+  removeAll(@Req() request: { user: UserDto }): Promise<ShoppingCart> {
     const userId = request.user.id;
 
-    return this.shoppingCartService.remove(Number(id), userId);
+    return this.shoppingCartService.removeAll(userId);
   }
-  //
-  // @Delete('remove-all/:id')
-  // removeAll(@Param('id') userId: number): Promise<void> {
-  //   return this.shoppingCartService.removeAll(userId);
-  // }
 }

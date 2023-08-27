@@ -100,6 +100,8 @@ export class ShoppingCartService {
       ...exitingShoppingCart.products,
       newProduct,
     ];
+    exitingShoppingCart.total_price += product.price;
+
     await exitingShoppingCart.save();
 
     return exitingShoppingCart;
@@ -194,13 +196,19 @@ export class ShoppingCartService {
 
       exitingShoppingCart.total_price -= product.price * productIncludes.count;
       exitingShoppingCart.products = productInTheCart;
-      // exitingShoppingCart.changed('products', true);
 
-      await exitingShoppingCart.save();
-      return { message: 'Товар удалён' };
+      return await exitingShoppingCart.save();
     }
   }
-  // async removeAll(userId: number): Promise<void> {
-  //   await this.shoppingCartModel.destroy({ where: { userId } });
-  // }
+
+  async removeAll(userId: number): Promise<ShoppingCart> {
+    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+      where: { user: userId },
+    });
+
+    exitingShoppingCart.products = [];
+    exitingShoppingCart.total_price = 0;
+
+    return await exitingShoppingCart.save();
+  }
 }
