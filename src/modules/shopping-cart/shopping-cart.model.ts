@@ -8,17 +8,9 @@ export class ShoppingCart extends Model {
   user: User;
 
   @Column({
-    type: DataTypes.ARRAY(DataTypes.JSONB),
+    type: DataTypes.JSONB,
     allowNull: true,
     defaultValue: [],
-    get() {
-      const data = this.getDataValue('products');
-      const toSend = [];
-      data.forEach((val) => {
-        toSend.push(typeof val === 'string' ? JSON.parse(val) : val);
-      });
-      return toSend;
-    },
   })
   products;
 

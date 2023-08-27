@@ -54,6 +54,8 @@ export class ShoppingCartService {
       );
     }
 
+    console.log(product.images);
+
     if (!exitingShoppingCart) {
       const newCart: {
         user: number;
@@ -68,7 +70,7 @@ export class ShoppingCartService {
             price: product.price,
             weight: product.weight,
             in_stock: product.in_stock - 1,
-            image: JSON.parse(product.images)[0].url,
+            image: product.images[0].url,
             count: 1,
           },
         ],
@@ -92,7 +94,7 @@ export class ShoppingCartService {
       price: product.price,
       weight: product.weight,
       in_stock: product.in_stock - 1,
-      image: JSON.parse(product.images)[0].url,
+      image: product.images[0].url,
       count: 1,
     };
 

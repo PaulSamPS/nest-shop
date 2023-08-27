@@ -35,16 +35,18 @@ export class ProfileController {
     @Body() profileDto: ProfileDto,
     @Req() request,
     @UploadedFiles() file: Express.Multer.File[],
-  ): Promise<Profile> {
+  ) {
     const user: UserDto = request.user;
 
-    if (file) {
+    if (file.length > 0) {
       await this.fileService.removeFile(user.username);
-    }
-    const imagesArr: MFile[] = await this.fileService.convertToWebp(file);
-    const convertedImage: FileElementResponse[] =
-      await this.fileService.saveFile(imagesArr, user.username, 'profile');
+      const imagesArr: MFile = await this.fileService.convertToWebpOne(file);
+      const convertedImage: FileElementResponse =
+        await this.fileService.saveFileOne(imagesArr, user.username, 'profile');
 
-    return this.profileService.create(user, profileDto, convertedImage);
+      return this.profileService.create(user, profileDto, convertedImage);
+    }
+
+    return this.profileService.create(user, profileDto);
   }
 }

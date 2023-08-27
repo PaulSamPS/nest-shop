@@ -11,8 +11,8 @@ export class Product extends Model {
   @Column({ type: DataType.TEXT })
   description: string;
 
-  @Column({ type: DataType.TEXT })
-  images: string;
+  @Column({ type: DataType.JSONB })
+  images;
 
   @Column
   dimensions: string;

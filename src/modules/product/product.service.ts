@@ -72,7 +72,7 @@ export class ProductService {
     product.price = createProductDto.price;
     product.name = createProductDto.name;
     product.description = createProductDto.description;
-    product.images = JSON.stringify(files);
+    product.images = files;
     product.dimensions = createProductDto.dimensions;
     product.in_stock = createProductDto.in_stock;
     product.bestseller = createProductDto.bestsellers;

@@ -1,4 +1,10 @@
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { User } from '@/modules/user';
 
 @Table
@@ -6,8 +12,8 @@ export class Profile extends Model {
   @ForeignKey(() => User)
   user: User;
 
-  @Column
-  avatar: string;
+  @Column({ type: DataType.JSONB })
+  avatar;
 
   @Column
   firstname: string;

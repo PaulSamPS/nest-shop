@@ -50,4 +50,35 @@ export class FilesService {
         console.log('Файл Удалён');
       };
   }
+
+  async saveFileOne(
+    files: MFile,
+    name: string,
+    folder: string,
+  ): Promise<FileElementResponse> {
+    const uploadFolder = `${path}/uploads/${folder}/${name}`;
+    await ensureDir(uploadFolder);
+    let res: FileElementResponse = {} as FileElementResponse;
+
+    await writeFile(`${uploadFolder}/${files.originalname}`, files.buffer);
+    res = {
+      url: `/static/${folder}/${name}/${files.originalname}`,
+      name: files.originalname,
+    };
+
+    return res;
+  }
+
+  async convertToWebpOne(files: Express.Multer.File[]): Promise<MFile> {
+    let imagesArr: MFile = {} as MFile;
+    for (const file of files) {
+      if (file.mimetype.includes('image')) {
+        imagesArr = new MFile({
+          originalname: `${uuid.v4().split('.')[0]}.webp`,
+          buffer: await sharp(file.buffer).webp().toBuffer(),
+        });
+      }
+    }
+    return imagesArr;
+  }
 }
