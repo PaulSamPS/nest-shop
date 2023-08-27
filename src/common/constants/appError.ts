@@ -8,4 +8,5 @@ export const AppError = {
   USER_NOT_FOUND: 'Пользователь не найден',
   LINK_HAS_BEEN_EXPIRED: 'Время жизни ссылки истекло',
   INVALID_CREDENTIALS: 'Неверные учетные данные',
+  ITEM_DOES_NOT_EXIST: 'Товар не существует',
 };

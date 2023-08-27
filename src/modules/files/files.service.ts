@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { FileElementResponse } from './dto/file-element-response.response';
 import { path } from 'app-root-path';
 import { ensureDir, writeFile } from 'fs-extra';
-import * as sharp from 'sharp';
 import { MFile } from './mfile.class';
+import * as sharp from 'sharp';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class FilesService {
@@ -19,7 +20,7 @@ export class FilesService {
     for (const file of files) {
       await writeFile(`${uploadFolder}/${file.originalname}`, file.buffer);
       res.push({
-        url: `/uploads/${name}/${file.originalname}`,
+        url: `/static/${folder}/${name}/${file.originalname}`,
         name: file.originalname,
       });
     }
@@ -33,7 +34,7 @@ export class FilesService {
       if (file.mimetype.includes('image')) {
         imagesArr.push(
           new MFile({
-            originalname: `${file.originalname.split('.')[0]}.webp`,
+            originalname: `${uuid.v4().split('.')[0]}.webp`,
             buffer: await sharp(file.buffer).webp().toBuffer(),
           }),
         );

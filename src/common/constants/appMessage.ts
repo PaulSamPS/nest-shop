@@ -4,4 +4,5 @@ export const AppMessage = {
   LOGGED_IN: 'Вход выполнен',
   SESSION_HAS_ENDED: 'Сессия завершена',
   LINK_HAS_BEEN_SENT: 'Ссылка отправлена',
+  ITEM_ALREADY_IN_THE_CART: 'Товар уже в корзине',
 };

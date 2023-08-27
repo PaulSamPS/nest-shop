@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ShoppingCart } from './shopping-cart.model';
 import { UserService } from '@/modules/user';
@@ -6,6 +6,8 @@ import { ProductService } from '@/modules/product';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { Product } from '@/modules/product/product.model';
 import { ProductCartDto } from '@/modules/shopping-cart/dto/productCart.dto';
+import { AppMessage } from '@/common/constants/appMessage';
+import { AppError } from '@/common/constants/appError';
 
 @Injectable()
 export class ShoppingCartService {
@@ -33,7 +35,10 @@ export class ShoppingCartService {
     return exitingShoppingCart;
   }
 
-  async add(addToCartDto: AddToCartDto, userId: number): Promise<ShoppingCart> {
+  async add(
+    addToCartDto: AddToCartDto,
+    userId: number,
+  ): Promise<ShoppingCart | { message: string }> {
     const product: Product = await this.productsService.findOneByiD(
       addToCartDto.productId,
     );
@@ -41,6 +46,13 @@ export class ShoppingCartService {
     const exitingShoppingCart = await this.shoppingCartModel.findOne({
       where: { user: userId },
     });
+
+    if (!product) {
+      throw new HttpException(
+        AppError.ITEM_DOES_NOT_EXIST,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     if (!exitingShoppingCart) {
       const newCart: {
@@ -71,24 +83,7 @@ export class ShoppingCartService {
     );
 
     if (productIncludes) {
-      const productInTheCart: ProductCartDto =
-        exitingShoppingCart.products.find(
-          (p: ProductCartDto) => p.productId === product.id,
-        );
-
-      if (productInTheCart.in_stock > 0) {
-        productInTheCart.count += 1;
-
-        productInTheCart.in_stock -= 1;
-
-        exitingShoppingCart.total_price += product.price;
-
-        exitingShoppingCart.changed('products', true);
-
-        return await exitingShoppingCart.save();
-      }
-
-      return exitingShoppingCart;
+      return { message: AppMessage.ITEM_ALREADY_IN_THE_CART };
     }
 
     const newProduct: ProductCartDto = {
@@ -110,45 +105,101 @@ export class ShoppingCartService {
     return exitingShoppingCart;
   }
 
-  // async increaseCountAndTotalPrice(
-  //   productId: number,
-  // ): Promise<{ count: number; total_price: number }> {
-  //   const product: ShoppingCart = await this.shoppingCartModel.findOne({
-  //     where: { productId },
-  //   });
-  //
-  //   product.count += 1;
-  //   product.total_price = product.count * product.price;
-  //   await product.save();
-  //
-  //   return { count: product.count, total_price: product.total_price };
-  // }
+  async increaseCountAndTotalPrice(addToCartDto: AddToCartDto, userId: number) {
+    const product: Product = await this.productsService.findOneByiD(
+      addToCartDto.productId,
+    );
 
-  // async decreaseCountAndTotalPrice(
-  //   productId: number,
-  // ): Promise<{ count: number; total_price: number } | { msg: string }> {
-  //   const product: ShoppingCart = await this.shoppingCartModel.findOne({
-  //     where: { productId },
-  //   });
-  //
-  //   if (product.count > 1) {
-  //     product.count -= 1;
-  //     product.total_price = product.count * product.price;
-  //     await product.save();
-  //
-  //     return { count: product.count, total_price: product.total_price };
-  //   }
-  //
-  //   return { msg: 'Минимальное колличество 1' };
-  // }
-  //
-  // async remove(productId: number): Promise<void> {
-  //   const product: ShoppingCart = await this.shoppingCartModel.findOne({
-  //     where: { productId },
-  //   });
-  //
-  //   return product.destroy();
-  // }
+    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+      where: { user: userId },
+    });
+
+    const productIncludes: boolean = exitingShoppingCart.products.some(
+      (p: ProductCartDto) => p.productId === product.id,
+    );
+
+    if (exitingShoppingCart && productIncludes) {
+      const productInTheCart: ProductCartDto =
+        exitingShoppingCart.products.find(
+          (p: ProductCartDto) => p.productId === product.id,
+        );
+
+      if (productInTheCart.in_stock > 0) {
+        productInTheCart.count += 1;
+
+        productInTheCart.in_stock -= 1;
+
+        exitingShoppingCart.total_price += product.price;
+
+        exitingShoppingCart.changed('products', true);
+
+        return await exitingShoppingCart.save();
+      }
+
+      return exitingShoppingCart;
+    }
+  }
+
+  async decreaseCountAndTotalPrice(addToCartDto: AddToCartDto, userId: number) {
+    const product: Product = await this.productsService.findOneByiD(
+      addToCartDto.productId,
+    );
+
+    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+      where: { user: userId },
+    });
+
+    const productIncludes: boolean = exitingShoppingCart.products.some(
+      (p: ProductCartDto) => p.productId === product.id,
+    );
+
+    if (exitingShoppingCart && productIncludes) {
+      const productInTheCart: ProductCartDto =
+        exitingShoppingCart.products.find(
+          (p: ProductCartDto) => p.productId === product.id,
+        );
+
+      if (productInTheCart.in_stock < product.in_stock - 1) {
+        productInTheCart.count -= 1;
+
+        productInTheCart.in_stock += 1;
+
+        exitingShoppingCart.total_price -= product.price;
+
+        exitingShoppingCart.changed('products', true);
+
+        return await exitingShoppingCart.save();
+      }
+
+      return exitingShoppingCart;
+    }
+  }
+
+  async remove(productId: number, userId: number) {
+    const product: Product = await this.productsService.findOneByiD(productId);
+
+    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+      where: { user: userId },
+    });
+
+    const productIncludes = exitingShoppingCart.products.find(
+      (p: ProductCartDto) => p.productId === product.id,
+    );
+
+    if (exitingShoppingCart && productIncludes) {
+      const productInTheCart: ProductCartDto =
+        exitingShoppingCart.products.filter(
+          (p: ProductCartDto) => p.productId !== product.id,
+        );
+
+      exitingShoppingCart.total_price -= product.price * productIncludes.count;
+      exitingShoppingCart.products = productInTheCart;
+      // exitingShoppingCart.changed('products', true);
+
+      await exitingShoppingCart.save();
+      return { message: 'Товар удалён' };
+    }
+  }
   // async removeAll(userId: number): Promise<void> {
   //   await this.shoppingCartModel.destroy({ where: { userId } });
   // }

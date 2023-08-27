@@ -30,34 +30,51 @@ export class ShoppingCartController {
 
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: AddToCartResponse })
-  @Post('/add')
+  @Post('add-product')
   addToCart(
     @Body() addToCart: AddToCartDto,
     @Req() request,
-  ): Promise<ShoppingCart> {
+  ): Promise<ShoppingCart | { message: string }> {
     const userId = request.user.id;
 
     return this.shoppingCartService.add(addToCart, userId);
   }
 
-  // @Patch('/count/increase/:id')
-  // increaseCountAndTotalPrice(
-  //   @Param('id') productId: number,
-  // ): Promise<{ count: number; total_price: number }> {
-  //   return this.shoppingCartService.increaseCountAndTotalPrice(productId);
-  // }
-  //
-  // @Patch('/count/decrease/:id')
-  // decreaseCountAndTotalPrice(
-  //   @Param('id') productId: number,
-  // ): Promise<{ count: number; total_price: number } | { msg: string }> {
-  //   return this.shoppingCartService.decreaseCountAndTotalPrice(productId);
-  // }
-  //
-  // @Delete('remove-one/:id')
-  // removeOne(@Param('id') productId: number): Promise<void> {
-  //   return this.shoppingCartService.remove(productId);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Patch('increase-count')
+  increaseCountAndTotalPrice(
+    @Body() addToCart: AddToCartDto,
+    @Req() request,
+  ): Promise<ShoppingCart> {
+    const userId = request.user.id;
+
+    return this.shoppingCartService.increaseCountAndTotalPrice(
+      addToCart,
+      userId,
+    );
+  }
+  @UseGuards(JwtAuthGuard)
+  @Patch('decrease-count')
+  decreaseCountAndTotalPrice(
+    @Body() addToCart: AddToCartDto,
+    @Req() request,
+  ): Promise<ShoppingCart> {
+    const userId = request.user.id;
+
+    return this.shoppingCartService.decreaseCountAndTotalPrice(
+      addToCart,
+      userId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('remove-product/:id')
+  removeOne(@Param('id') id, @Req() request) {
+    console.log(Number(id));
+    const userId = request.user.id;
+
+    return this.shoppingCartService.remove(Number(id), userId);
+  }
   //
   // @Delete('remove-all/:id')
   // removeAll(@Param('id') userId: number): Promise<void> {
