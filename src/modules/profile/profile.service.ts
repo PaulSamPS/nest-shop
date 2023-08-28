@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Profile } from '@/modules/profile/model/profile.model';
 import { ProfileDto } from '@/modules/profile/dto/profile.dto';
-import { UserDto } from '@/modules/user/dto/user.dto';
 import { FileElementResponse } from '@/modules/files/dto/file-element-response.response';
 
 @Injectable()
@@ -11,17 +10,17 @@ export class ProfileService {
     @InjectModel(Profile) private readonly profileModel: typeof Profile,
   ) {}
   async create(
-    user: UserDto,
+    userId: number,
     profileDto: ProfileDto,
     file?: FileElementResponse,
   ) {
     const existingProfile = await this.profileModel.findOne({
-      where: { user: user.id },
+      where: { user: userId },
     });
 
     if (!existingProfile) {
       const newProfile = {
-        user: user.id,
+        user: userId,
         firstname: profileDto.firstname,
         lastname: profileDto.lastname,
         avatar: file,
@@ -41,6 +40,18 @@ export class ProfileService {
     existingProfile.avatar = file;
     existingProfile.address = profileDto.address;
     await existingProfile.save();
+
+    return existingProfile;
+  }
+
+  async get(userId: number) {
+    const existingProfile = await this.profileModel.findOne({
+      where: { user: userId },
+    });
+
+    if (!existingProfile) {
+      return null;
+    }
 
     return existingProfile;
   }

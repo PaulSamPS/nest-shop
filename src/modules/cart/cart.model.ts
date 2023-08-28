@@ -3,7 +3,7 @@ import { User } from '@/modules/user';
 import { DataTypes } from 'sequelize';
 
 @Table
-export class ShoppingCart extends Model {
+export class Cart extends Model {
   @ForeignKey(() => User)
   user: User;
 

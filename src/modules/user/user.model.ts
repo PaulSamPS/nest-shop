@@ -1,13 +1,6 @@
-import {
-  Column,
-  DataType,
-  HasMany,
-  HasOne,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
 import { Profile } from '@/modules/profile/model/profile.model';
-import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
+import { Cart } from '@/modules/cart/cart.model';
 
 @Table
 export class User extends Model {
@@ -38,9 +31,9 @@ export class User extends Model {
   })
   profile: Profile;
 
-  @HasOne(() => ShoppingCart, {
+  @HasOne(() => Cart, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  shoppingCart: ShoppingCart;
+  shoppingCart: Cart;
 }

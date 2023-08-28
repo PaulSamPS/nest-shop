@@ -6,14 +6,14 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { ProductModule } from 'src/modules/product';
 import { MulterModule } from '@nestjs/platform-express';
 import { FilesModule } from '@/modules/files';
-import { ShoppingCartModule } from 'src/modules/shopping-cart';
+import { CartModule } from 'src/modules/cart';
 import { PaymentModule } from 'src/modules/payment';
 import configurations from 'src/config';
 import { MailModule } from '@/modules/mail/mail.module';
 import { TokenModule } from '@/modules/token/token.module';
 import { ProfileModule } from '@/modules/profile/profile.module';
 import { Profile } from '@/modules/profile/model/profile.model';
-import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
+import { Cart } from '@/modules/cart/cart.model';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
           charset: 'utf8',
           collate: 'utf8_general_ci',
         },
-        models: [User, Profile, ShoppingCart],
+        models: [User, Profile, Cart],
       }),
     }),
     ConfigModule.forRoot({
@@ -46,7 +46,7 @@ import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
     ProductModule,
     MulterModule.register({ dest: './uploads ' }),
     FilesModule,
-    ShoppingCartModule,
+    CartModule,
     PaymentModule,
     TokenModule,
     ProfileModule,

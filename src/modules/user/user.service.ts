@@ -14,7 +14,7 @@ import { AppMessage } from '@/common/constants/appMessage';
 import { AppError } from '@/common/constants/appError';
 import { ConfigService } from '@nestjs/config';
 import { Profile } from '@/modules/profile/model/profile.model';
-import { ShoppingCart } from '@/modules/shopping-cart/shopping-cart.model';
+import { Cart } from '@/modules/cart/cart.model';
 
 @Injectable()
 export class UserService {
@@ -58,16 +58,6 @@ export class UserService {
       attributes: {
         exclude: this.exclude,
       },
-      include: [
-        {
-          model: Profile,
-          required: false,
-        },
-        {
-          model: ShoppingCart,
-          required: false,
-        },
-      ],
     });
   }
 

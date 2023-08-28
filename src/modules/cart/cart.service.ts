@@ -1,35 +1,34 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ShoppingCart } from './shopping-cart.model';
+import { Cart } from './cart.model';
 import { UserService } from '@/modules/user';
 import { ProductService } from '@/modules/product';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { Product } from '@/modules/product/product.model';
-import { ProductCartDto } from '@/modules/shopping-cart/dto/productCart.dto';
+import { ProductCartDto } from '@/modules/cart/dto/productCart.dto';
 import { AppMessage } from '@/common/constants/appMessage';
 import { AppError } from '@/common/constants/appError';
 
 @Injectable()
-export class ShoppingCartService {
+export class CartService {
   constructor(
-    @InjectModel(ShoppingCart)
-    private shoppingCartModel: typeof ShoppingCart,
+    @InjectModel(Cart)
+    private cartModel: typeof Cart,
     private readonly usersService: UserService,
     private readonly productsService: ProductService,
   ) {}
 
-  async findAll(userId: number): Promise<ShoppingCart[]> {
-    return this.shoppingCartModel.findAll({ where: { userId } });
+  async findAll(userId: number): Promise<Cart[]> {
+    return this.cartModel.findAll({ where: { userId } });
   }
 
   async get(userId: number) {
-    const shoppingCart = new ShoppingCart();
-    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+    const exitingShoppingCart = await this.cartModel.findOne({
       where: { user: userId },
     });
 
     if (!exitingShoppingCart) {
-      return shoppingCart.save();
+      return null;
     }
 
     return exitingShoppingCart;
@@ -38,12 +37,12 @@ export class ShoppingCartService {
   async add(
     addToCartDto: AddToCartDto,
     userId: number,
-  ): Promise<ShoppingCart | { message: string }> {
+  ): Promise<Cart | { message: string }> {
     const product: Product = await this.productsService.findOneByiD(
       addToCartDto.productId,
     );
 
-    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+    const exitingShoppingCart = await this.cartModel.findOne({
       where: { user: userId },
     });
 
@@ -53,8 +52,6 @@ export class ShoppingCartService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    console.log(product.images);
 
     if (!exitingShoppingCart) {
       const newCart: {
@@ -77,7 +74,7 @@ export class ShoppingCartService {
         total_price: product.price,
       };
 
-      return await this.shoppingCartModel.create(newCart);
+      return await this.cartModel.create(newCart);
     }
 
     const productIncludes: boolean = exitingShoppingCart.products.some(
@@ -114,7 +111,7 @@ export class ShoppingCartService {
       addToCartDto.productId,
     );
 
-    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+    const exitingShoppingCart = await this.cartModel.findOne({
       where: { user: userId },
     });
 
@@ -149,7 +146,7 @@ export class ShoppingCartService {
       addToCartDto.productId,
     );
 
-    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+    const exitingShoppingCart = await this.cartModel.findOne({
       where: { user: userId },
     });
 
@@ -182,7 +179,7 @@ export class ShoppingCartService {
   async remove(productId: number, userId: number) {
     const product: Product = await this.productsService.findOneByiD(productId);
 
-    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+    const exitingShoppingCart = await this.cartModel.findOne({
       where: { user: userId },
     });
 
@@ -203,8 +200,8 @@ export class ShoppingCartService {
     }
   }
 
-  async removeAll(userId: number): Promise<ShoppingCart> {
-    const exitingShoppingCart = await this.shoppingCartModel.findOne({
+  async removeAll(userId: number): Promise<Cart> {
+    const exitingShoppingCart = await this.cartModel.findOne({
       where: { user: userId },
     });
 

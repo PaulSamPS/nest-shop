@@ -33,10 +33,10 @@ export class ProfileController {
   @UseInterceptors(FilesInterceptor('avatar'))
   async create(
     @Body() profileDto: ProfileDto,
-    @Req() request,
+    @Req() request: { user: UserDto },
     @UploadedFiles() file: Express.Multer.File[],
   ) {
-    const user: UserDto = request.user;
+    const user = request.user;
 
     if (file.length > 0) {
       await this.fileService.removeFile(user.username);
@@ -44,9 +44,17 @@ export class ProfileController {
       const convertedImage: FileElementResponse =
         await this.fileService.saveFileOne(imagesArr, user.username, 'profile');
 
-      return this.profileService.create(user, profileDto, convertedImage);
+      return this.profileService.create(user.id, profileDto, convertedImage);
     }
 
-    return this.profileService.create(user, profileDto);
+    return this.profileService.create(user.id, profileDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('get')
+  async getProfile(@Req() request: { user: UserDto }) {
+    const user = request.user;
+
+    return await this.profileService.get(user.id);
   }
 }

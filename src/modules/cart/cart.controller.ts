@@ -8,24 +8,25 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ShoppingCartService } from './shopping-cart.service';
+import { CartService } from './cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { AddToCartResponse, GetAllResponse } from './types';
-import { ShoppingCart } from './shopping-cart.model';
+import { Cart } from './cart.model';
 import { JwtAuthGuard } from '@/guards/jwt.guard';
 import { UserDto } from '@/modules/user/dto/user.dto';
 
-@Controller('shopping-cart')
-export class ShoppingCartController {
-  constructor(private readonly shoppingCartService: ShoppingCartService) {}
+@Controller('cart')
+export class CartController {
+  constructor(private readonly cartService: CartService) {}
 
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [GetAllResponse] })
   @Get('get')
-  getAll(@Req() request: { user: UserDto }): Promise<ShoppingCart> {
+  get(@Req() request: { user: UserDto }): Promise<Cart> {
     const userId: number = request.user.id;
 
-    return this.shoppingCartService.get(userId);
+    return this.cartService.get(userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -34,10 +35,10 @@ export class ShoppingCartController {
   addToCart(
     @Body() addToCart: AddToCartDto,
     @Req() request: { user: UserDto },
-  ): Promise<ShoppingCart | { message: string }> {
+  ): Promise<Cart | { message: string }> {
     const userId = request.user.id;
 
-    return this.shoppingCartService.add(addToCart, userId);
+    return this.cartService.add(addToCart, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -45,26 +46,20 @@ export class ShoppingCartController {
   increaseCountAndTotalPrice(
     @Body() addToCart: AddToCartDto,
     @Req() request: { user: UserDto },
-  ): Promise<ShoppingCart> {
+  ): Promise<Cart> {
     const userId = request.user.id;
 
-    return this.shoppingCartService.increaseCountAndTotalPrice(
-      addToCart,
-      userId,
-    );
+    return this.cartService.increaseCountAndTotalPrice(addToCart, userId);
   }
   @UseGuards(JwtAuthGuard)
   @Patch('decrease-count')
   decreaseCountAndTotalPrice(
     @Body() addToCart: AddToCartDto,
     @Req() request: { user: UserDto },
-  ): Promise<ShoppingCart> {
+  ): Promise<Cart> {
     const userId = request.user.id;
 
-    return this.shoppingCartService.decreaseCountAndTotalPrice(
-      addToCart,
-      userId,
-    );
+    return this.cartService.decreaseCountAndTotalPrice(addToCart, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -76,14 +71,14 @@ export class ShoppingCartController {
     const userId = request.user.id;
     const { productId } = id;
 
-    return this.shoppingCartService.remove(productId, userId);
+    return this.cartService.remove(productId, userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('remove-all')
-  removeAll(@Req() request: { user: UserDto }): Promise<ShoppingCart> {
+  removeAll(@Req() request: { user: UserDto }): Promise<Cart> {
     const userId = request.user.id;
 
-    return this.shoppingCartService.removeAll(userId);
+    return this.cartService.removeAll(userId);
   }
 }
