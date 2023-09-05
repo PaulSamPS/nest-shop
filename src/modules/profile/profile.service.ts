@@ -9,11 +9,7 @@ export class ProfileService {
   constructor(
     @InjectModel(Profile) private readonly profileModel: typeof Profile,
   ) {}
-  async create(
-    userId: number,
-    profileDto: ProfileDto,
-    file?: FileElementResponse,
-  ) {
+  async update(userId: number, profileDto: ProfileDto) {
     const existingProfile = await this.profileModel.findOne({
       where: { user: userId },
     });
@@ -23,7 +19,6 @@ export class ProfileService {
         user: userId,
         firstname: profileDto.firstname,
         lastname: profileDto.lastname,
-        avatar: file,
         country: profileDto.country,
         region: profileDto.region,
         city: profileDto.city,
@@ -37,8 +32,32 @@ export class ProfileService {
     existingProfile.country = profileDto.country;
     existingProfile.region = profileDto.region;
     existingProfile.city = profileDto.city;
-    existingProfile.avatar = file;
     existingProfile.address = profileDto.address;
+    await existingProfile.save();
+
+    return existingProfile;
+  }
+
+  async avatar(file: FileElementResponse, userId: number) {
+    const existingProfile = await this.profileModel.findOne({
+      where: { user: userId },
+    });
+
+    if (!existingProfile) {
+      const newProfile = {
+        user: userId,
+        firstname: null,
+        lastname: null,
+        avatar: file,
+        country: null,
+        region: null,
+        city: null,
+      };
+
+      return await this.profileModel.create(newProfile);
+    }
+
+    existingProfile.avatar = file;
     await existingProfile.save();
 
     return existingProfile;

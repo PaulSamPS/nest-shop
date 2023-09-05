@@ -29,25 +29,33 @@ export class ProfileController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('create')
+  @Post('update')
   @UseInterceptors(FilesInterceptor('avatar'))
-  async create(
+  async update(
     @Body() profileDto: ProfileDto,
     @Req() request: { user: UserDto },
-    @UploadedFiles() file: Express.Multer.File[],
-  ) {
+  ): Promise<Profile> {
     const user = request.user;
 
-    if (file.length > 0) {
-      await this.fileService.removeFile(user.username);
-      const imagesArr: MFile = await this.fileService.convertToWebpOne(file);
-      const convertedImage: FileElementResponse =
-        await this.fileService.saveFileOne(imagesArr, user.username, 'profile');
+    return this.profileService.update(user.id, profileDto);
+  }
 
-      return this.profileService.create(user.id, profileDto, convertedImage);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Post('update-avatar')
+  @UseInterceptors(FilesInterceptor('avatar'))
+  async updateAvatar(
+    @UploadedFiles() file: Express.Multer.File[],
+    @Req() request: { user: UserDto },
+  ) {
+    const user = request.user;
+    console.log(file, user);
 
-    return this.profileService.create(user.id, profileDto);
+    await this.fileService.removeFile(user.username);
+    const imagesArr: MFile = await this.fileService.convertToWebpOne(file);
+    const convertedImage: FileElementResponse =
+      await this.fileService.saveFileOne(imagesArr, user.username, 'profile');
+
+    return this.profileService.avatar(convertedImage, user.id);
   }
 
   @UseGuards(JwtAuthGuard)
