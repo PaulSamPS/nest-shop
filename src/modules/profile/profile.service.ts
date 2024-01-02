@@ -74,4 +74,19 @@ export class ProfileService {
 
     return existingProfile;
   }
+
+  async deleteAvatar(userId: number) {
+    const existingProfile = await this.profileModel.findOne({
+      where: { user: userId },
+    });
+
+    if (!existingProfile) {
+      return null;
+    }
+
+    existingProfile.avatar = null;
+    await existingProfile.save();
+
+    return existingProfile;
+  }
 }

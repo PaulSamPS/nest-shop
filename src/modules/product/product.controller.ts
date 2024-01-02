@@ -68,9 +68,10 @@ export class ProductController {
   }
 
   @ApiOkResponse({ type: FindOneResponse })
-  @Get('find/:id')
-  getOne(@Param('id') id: string): Promise<Product> {
-    return this.productService.findOneByiD(id);
+  @Get('find/:name')
+  getOne(@Param('name') name: string): Promise<Product> {
+    console.log(name);
+    return this.productService.findOneByName(name);
   }
 
   @ApiOkResponse({ type: BestSellersResponse })

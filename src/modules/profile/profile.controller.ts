@@ -29,7 +29,7 @@ export class ProfileController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('update')
+  @Patch('update')
   @UseInterceptors(FilesInterceptor('avatar'))
   async update(
     @Body() profileDto: ProfileDto,
@@ -41,14 +41,13 @@ export class ProfileController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('update-avatar')
+  @Patch('update-avatar')
   @UseInterceptors(FilesInterceptor('avatar'))
   async updateAvatar(
     @UploadedFiles() file: Express.Multer.File[],
     @Req() request: { user: UserDto },
   ) {
     const user = request.user;
-    console.log(file, user);
 
     await this.fileService.removeFile(user.username);
     const imagesArr: MFile = await this.fileService.convertToWebpOne(file);
@@ -64,5 +63,19 @@ export class ProfileController {
     const user = request.user;
 
     return await this.profileService.get(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('delete-avatar')
+  @UseInterceptors(FilesInterceptor('avatar'))
+  async deleteAvatar(
+    @UploadedFiles() file: Express.Multer.File[],
+    @Req() request: { user: UserDto },
+  ) {
+    const user = request.user;
+
+    await this.fileService.removeFile(user.username);
+
+    return this.profileService.deleteAvatar(user.id);
   }
 }

@@ -13,8 +13,6 @@ import * as crypto from 'crypto';
 import { AppMessage } from '@/common/constants/appMessage';
 import { AppError } from '@/common/constants/appError';
 import { ConfigService } from '@nestjs/config';
-import { Profile } from '@/modules/profile/model/profile.model';
-import { Cart } from '@/modules/cart/cart.model';
 
 @Injectable()
 export class UserService {

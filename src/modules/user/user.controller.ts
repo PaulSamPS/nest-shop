@@ -16,6 +16,7 @@ export class UserController {
 
   @Post('/reset-password')
   resetPassword(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto);
     return this.userServices.sendResetPasswordLink(createUserDto);
   }
 
