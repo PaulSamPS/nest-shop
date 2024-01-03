@@ -70,23 +70,14 @@ export class ProductService {
     }
 
     product.price = createProductDto.price;
+    product.oldPrice = createProductDto.oldPrice;
     product.name = createProductDto.name;
     product.description = createProductDto.description;
     product.images = files;
-    product.dimensions = createProductDto.dimensions;
     product.in_stock = createProductDto.in_stock;
     product.bestseller = createProductDto.bestsellers;
     product.new = createProductDto.new;
-    product.rating = createProductDto.rating;
-    product.weight = createProductDto.weight;
-    product.frame_material = createProductDto.frame_material;
-    product.legs_material = createProductDto.legs_material;
-    product.backrest_height = createProductDto.backrest_height;
-    product.seat_height = createProductDto.seat_height;
-    product.seat_depth = createProductDto.seat_depth;
-    product.seat_width = createProductDto.seat_width;
-    product.warranty_period = createProductDto.warranty_period;
-    product.country_of_manufacture = createProductDto.country_of_manufacture;
+    product.category = createProductDto.category;
 
     return product.save();
   }

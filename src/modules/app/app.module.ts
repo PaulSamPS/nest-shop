@@ -15,6 +15,7 @@ import { ProfileModule } from '@/modules/profile/profile.module';
 import { Profile } from '@/modules/profile/model/profile.model';
 import { Cart } from '@/modules/cart/cart.model';
 import { FeaturesModule } from '@/modules/features/features.module';
+import { ReviewModule } from '@/modules/review/review.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { FeaturesModule } from '@/modules/features/features.module';
     TokenModule,
     ProfileModule,
     FeaturesModule,
+    ReviewModule,
   ],
 })
 export class AppModule {}

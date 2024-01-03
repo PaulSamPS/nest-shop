@@ -5,6 +5,9 @@ export class Product extends Model {
   @Column({ defaultValue: 0 })
   price: number;
 
+  @Column({ defaultValue: 0 })
+  oldPrice: number;
+
   @Column
   name: string;
 
@@ -13,9 +16,6 @@ export class Product extends Model {
 
   @Column({ type: DataType.JSONB })
   images;
-
-  @Column
-  dimensions: string;
 
   @Column({ defaultValue: 0 })
   in_stock: number;
@@ -27,32 +27,8 @@ export class Product extends Model {
   new: boolean;
 
   @Column({ defaultValue: 0 })
-  rating: number;
-
-  @Column({ defaultValue: '0' })
-  weight: string;
+  soldCount: number;
 
   @Column
-  frame_material: string;
-
-  @Column
-  legs_material: number;
-
-  @Column
-  backrest_height: number;
-
-  @Column
-  seat_height: number;
-
-  @Column
-  seat_depth: number;
-
-  @Column
-  seat_width: number;
-
-  @Column
-  warranty_period: number;
-
-  @Column({ defaultValue: 'Россия' })
-  country_of_manufacture: string;
+  category: string;
 }

@@ -9,12 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { FeaturesService } from './features.service';
-import {
-  FeaturesArr,
-  FeaturesDtoCreate,
-} from '@/modules/features/dto/features.dto';
-import { JSON } from 'sequelize';
-import { Features } from '@/modules/features/features.model';
+import { FeaturesDtoCreate } from '@/modules/features/dto/features.dto';
 
 @Controller('features')
 export class FeaturesController {
@@ -24,11 +19,6 @@ export class FeaturesController {
   @HttpCode(HttpStatus.CREATED)
   @Header('Content-type', 'application/json')
   async createFeatures(@Body() featuresCreateDto: FeaturesDtoCreate) {
-    console.log(
-      JSON().stringify(featuresCreateDto.features),
-      featuresCreateDto.productName,
-    );
-
     return this.featuresService.create(featuresCreateDto);
   }
 
