@@ -108,9 +108,10 @@ export class ProductService {
         const item = p[ind];
         if (item.oldPrice > 0) {
           dayProducts.push(p.splice(ind, 1)[0]);
+          console.log(dayProducts);
+          return dayProducts;
         }
       }
-      return dayProducts;
     }
 
     return {
@@ -129,7 +130,17 @@ export class ProductService {
 
   async getTopProducts() {
     const products = await this.productModel.findAll({
-      where: { rating: { [Op.gt]: 4 } },
+      where: { rating: { [Op.gt]: 4 }, new: false },
+      include: [
+        {
+          model: Review,
+          required: false,
+        },
+        {
+          model: Features,
+          required: false,
+        },
+      ],
     });
 
     if (products.length <= 0) {
