@@ -16,6 +16,9 @@ import { Profile } from '@/modules/profile/model/profile.model';
 import { Cart } from '@/modules/cart/cart.model';
 import { FeaturesModule } from '@/modules/features/features.module';
 import { ReviewModule } from '@/modules/review/review.module';
+import { Review } from '@/modules/review/review.model';
+import { Product } from '@/modules/product/product.model';
+import { Features } from '@/modules/features/features.model';
 
 @Module({
   imports: [
@@ -35,7 +38,7 @@ import { ReviewModule } from '@/modules/review/review.module';
           charset: 'utf8',
           collate: 'utf8_general_ci',
         },
-        models: [User, Profile, Cart],
+        models: [User, Profile, Cart, Review, Product, Features],
       }),
     }),
     ConfigModule.forRoot({

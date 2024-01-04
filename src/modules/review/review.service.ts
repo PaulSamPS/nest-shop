@@ -2,20 +2,29 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Review } from '@/modules/review/review.model';
 import { ReviewsDtoCreate } from '@/modules/review/dto/review.dto';
+import { Op } from 'sequelize';
+import { ProductService } from '@/modules/product';
 
 @Injectable()
 export class ReviewService {
   constructor(
     @InjectModel(Review)
     private reviewsModel: typeof Review,
+    private productService: ProductService,
   ) {}
+
+  async topProducts() {
+    return await this.reviewsModel.findAll({
+      where: { rating: { [Op.gt]: 4 } },
+    });
+  }
 
   async create(reviewsDtoCreate: ReviewsDtoCreate) {
     const review = new Review();
     const userReview = await this.reviewsModel.findOne({
       where: {
-        productName: reviewsDtoCreate.productName,
-        userId: reviewsDtoCreate.userId,
+        product: reviewsDtoCreate.product,
+        user: reviewsDtoCreate.user,
       },
     });
 
@@ -26,10 +35,37 @@ export class ReviewService {
       };
     }
 
-    review.productName = reviewsDtoCreate.productName;
+    const productReviews = await this.reviewsModel.findAndCountAll({
+      where: { product: reviewsDtoCreate.product },
+    });
+
+    const product = await this.productService.findOneByiD(
+      reviewsDtoCreate.product,
+    );
+
+    if (productReviews.count > 0) {
+      const { count, rows } = productReviews;
+
+      product.rating = (
+        (rows.reduce((sum, item) => sum + item.rating, 0) +
+          reviewsDtoCreate.rating) /
+        (count + 1)
+      ).toFixed(1);
+
+      review.product = reviewsDtoCreate.product;
+      review.firstName = reviewsDtoCreate.firstName;
+      review.lastName = reviewsDtoCreate.lastName;
+      review.rating = reviewsDtoCreate.rating;
+      review.review = reviewsDtoCreate.review;
+      review.approved = false;
+      await product.save();
+
+      return review.save();
+    }
+
+    review.product = reviewsDtoCreate.product;
     review.firstName = reviewsDtoCreate.firstName;
     review.lastName = reviewsDtoCreate.lastName;
-    review.userId = reviewsDtoCreate.userId;
     review.rating = reviewsDtoCreate.rating;
     review.review = reviewsDtoCreate.review;
     review.approved = false;

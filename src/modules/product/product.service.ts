@@ -5,7 +5,11 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Op } from 'sequelize';
 import { IProductsQuery } from './types';
 import { FileElementResponse } from '@/modules/files/dto/file-element-response.response';
+import { Review } from '@/modules/review/review.model';
+import { Features } from '@/modules/features/features.model';
 
+let dayProducts: Product[] = [];
+let productsYesterday: Product[] = [];
 @Injectable()
 export class ProductService {
   constructor(
@@ -37,7 +41,16 @@ export class ProductService {
   }
 
   async findOneByName(name: string): Promise<Product> {
-    return this.productModel.findOne({ where: { name } });
+    return this.productModel.findOne({
+      where: { name },
+      include: [
+        {
+          model: Review,
+          required: false,
+        },
+        { model: Features, required: false },
+      ],
+    });
   }
 
   async findOneByiD(id: number | string): Promise<Product> {
@@ -78,7 +91,47 @@ export class ProductService {
     product.bestseller = createProductDto.bestsellers;
     product.new = createProductDto.new;
     product.category = createProductDto.category;
+    product.rating = '';
 
     return product.save();
+  }
+
+  async setDayProducts() {
+    const product = await this.productModel.findAll();
+
+    if (product) {
+      productsYesterday = dayProducts;
+      dayProducts = [];
+      const p = product.map((i) => i);
+      for (let i = 0; i < 5; i++) {
+        const ind = Math.floor(Math.random() * p.length);
+        const item = p[ind];
+        if (item.oldPrice > 0) {
+          dayProducts.push(p.splice(ind, 1)[0]);
+        }
+      }
+      return dayProducts;
+    }
+
+    return {
+      message: 'Продукты не найдены',
+      status: HttpStatus.CONFLICT,
+    };
+  }
+
+  async getDayProducts() {
+    return dayProducts;
+  }
+
+  async getNewProducts() {
+    return await this.productModel.findAll({ where: { new: true } });
+  }
+
+  async getTopProducts(productName: string[]) {
+    console.log(
+      await this.productModel.findAll({
+        where: { name: productName.map((p) => p) },
+      }),
+    );
   }
 }

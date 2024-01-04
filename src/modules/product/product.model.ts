@@ -1,7 +1,29 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  HasOne,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Review } from '@/modules/review/review.model';
+import { Features } from '@/modules/features/features.model';
 
 @Table
 export class Product extends Model {
+  @HasMany(() => Review, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  review: Review;
+
+  @HasOne(() => Features, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  features: Features;
+
   @Column({ defaultValue: 0 })
   price: number;
 
@@ -28,6 +50,9 @@ export class Product extends Model {
 
   @Column({ defaultValue: 0 })
   soldCount: number;
+
+  @Column
+  rating: string;
 
   @Column
   category: string;
