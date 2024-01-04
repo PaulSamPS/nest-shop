@@ -31,13 +31,12 @@ import {
 import { Product } from './product.model';
 import { MFile } from '@/modules/files/mfile.class';
 import { FileElementResponse } from '@/modules/files/dto/file-element-response.response';
-import { ReviewService } from '@/modules/review/review.service';
 
 @Controller('product')
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
-    private readonly fileService: FilesService, // private readonly reviewService: ReviewService,
+    private readonly fileService: FilesService,
   ) {}
 
   @ApiBody({ type: ProductRequest })
@@ -116,10 +115,8 @@ export class ProductController {
     return this.productService.getNewProducts();
   }
 
-  // @Get('top-products/get')
-  // async topProducts() {
-  //   const topProducts = await this.reviewService.topProducts();
-  //   const productNames = topProducts.map((p) => p.productName);
-  //   return this.productService.getTopProducts(productNames);
-  // }
+  @Get('top-products/get')
+  async topProducts() {
+    return await this.productService.getTopProducts();
+  }
 }

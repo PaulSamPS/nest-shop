@@ -46,11 +46,13 @@ export class ReviewService {
     if (productReviews.count > 0) {
       const { count, rows } = productReviews;
 
-      product.rating = (
-        (rows.reduce((sum, item) => sum + item.rating, 0) +
-          reviewsDtoCreate.rating) /
-        (count + 1)
-      ).toFixed(1);
+      product.rating = Number(
+        (
+          (rows.reduce((sum, item) => sum + item.rating, 0) +
+            reviewsDtoCreate.rating) /
+          (count + 1)
+        ).toFixed(1),
+      );
 
       review.product = reviewsDtoCreate.product;
       review.firstName = reviewsDtoCreate.firstName;

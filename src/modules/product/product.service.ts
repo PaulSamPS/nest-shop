@@ -91,7 +91,7 @@ export class ProductService {
     product.bestseller = createProductDto.bestsellers;
     product.new = createProductDto.new;
     product.category = createProductDto.category;
-    product.rating = '';
+    product.rating = 0;
 
     return product.save();
   }
@@ -127,11 +127,18 @@ export class ProductService {
     return await this.productModel.findAll({ where: { new: true } });
   }
 
-  async getTopProducts(productName: string[]) {
-    console.log(
-      await this.productModel.findAll({
-        where: { name: productName.map((p) => p) },
-      }),
-    );
+  async getTopProducts() {
+    const products = await this.productModel.findAll({
+      where: { rating: { [Op.gt]: 4 } },
+    });
+
+    if (products.length <= 0) {
+      return {
+        message: 'Продукты не найдены',
+        status: HttpStatus.CONFLICT,
+      };
+    }
+
+    return products;
   }
 }

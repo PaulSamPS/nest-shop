@@ -51,8 +51,8 @@ export class Product extends Model {
   @Column({ defaultValue: 0 })
   soldCount: number;
 
-  @Column
-  rating: string;
+  @Column({ type: DataType.DOUBLE, defaultValue: 0 })
+  rating: number;
 
   @Column
   category: string;
