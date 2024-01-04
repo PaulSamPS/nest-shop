@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFiles,
@@ -57,6 +58,27 @@ export class ProductController {
         'products',
       );
     return this.productService.create(createProductDto, convertedImages);
+  }
+
+  @Patch('/update/:name')
+  @HttpCode(HttpStatus.CREATED)
+  @Header('Content-type', 'application/json')
+  @UseInterceptors(FilesInterceptor('image'))
+  async updateProduct(
+    @Param('name') name: string,
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    let convertedImages: FileElementResponse[];
+    if (files.length > 0) {
+      const imagesArr: MFile[] = await this.fileService.convertToWebp(files);
+      convertedImages = await this.fileService.saveFile(
+        imagesArr,
+        createProductDto.name,
+        'products',
+      );
+    }
+    return this.productService.update(createProductDto, name, convertedImages);
   }
 
   @ApiOkResponse({ type: PaginateAndFilters })

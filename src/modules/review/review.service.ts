@@ -71,6 +71,9 @@ export class ReviewService {
     review.rating = reviewsDtoCreate.rating;
     review.review = reviewsDtoCreate.review;
     review.approved = false;
+    product.rating = reviewsDtoCreate.rating;
+
+    await product.save();
 
     return review.save();
   }

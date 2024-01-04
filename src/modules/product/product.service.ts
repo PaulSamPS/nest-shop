@@ -93,7 +93,63 @@ export class ProductService {
     product.category = createProductDto.category;
     product.rating = 0;
 
+    if (createProductDto.oldPrice > 0) {
+      product.discount = Math.floor(
+        ((createProductDto.oldPrice - createProductDto.price) /
+          createProductDto.oldPrice) *
+          100,
+      );
+    }
+
     return product.save();
+  }
+
+  async update(
+    createProductDto: CreateProductDto,
+    productName: string,
+    files?: FileElementResponse[],
+  ) {
+    const existingByUserName: Product = await this.findOneByName(productName);
+    console.log(files);
+
+    if (!existingByUserName) {
+      return {
+        message: 'Товара нет',
+        status: HttpStatus.CONFLICT,
+      };
+    }
+
+    if (createProductDto.price) {
+      existingByUserName.price = createProductDto.price;
+      existingByUserName.discount = Math.floor(
+        ((existingByUserName.oldPrice - createProductDto.price) /
+          existingByUserName.oldPrice) *
+          100,
+      );
+    }
+
+    if (createProductDto.oldPrice) {
+      existingByUserName.oldPrice = createProductDto.oldPrice;
+      existingByUserName.discount = Math.floor(
+        ((createProductDto.oldPrice - existingByUserName.price) /
+          createProductDto.oldPrice) *
+          100,
+      );
+    }
+
+    if (createProductDto.description) {
+      existingByUserName.description = createProductDto.description;
+    }
+
+    if (files) {
+      existingByUserName.images = files;
+    }
+
+    if (createProductDto.in_stock) {
+      existingByUserName.in_stock = createProductDto.in_stock;
+    }
+
+    return existingByUserName.save();
   }
 
   async setDayProducts() {
@@ -111,8 +167,8 @@ export class ProductService {
       for (let i = 0; i < 5; i++) {
         const ind = Math.floor(Math.random() * p.length);
         const item = p[ind];
-        console.log(item);
-        if (item.oldPrice > 0) {
+
+        if (item && item.oldPrice > 0) {
           dayProducts.push(p.splice(ind, 1)[0]);
         }
       }

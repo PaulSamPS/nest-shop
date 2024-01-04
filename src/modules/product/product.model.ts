@@ -54,6 +54,9 @@ export class Product extends Model {
   @Column({ type: DataType.DOUBLE, defaultValue: 0 })
   rating: number;
 
+  @Column({ defaultValue: 0 })
+  discount: number;
+
   @Column
   category: string;
 }

@@ -1,5 +1,4 @@
 import { IsNotEmpty } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -29,4 +28,6 @@ export class CreateProductDto {
   readonly category: string;
 
   soldCount: number;
+
+  discount: number;
 }
