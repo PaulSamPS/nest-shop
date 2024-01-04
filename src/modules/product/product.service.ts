@@ -97,7 +97,12 @@ export class ProductService {
   }
 
   async setDayProducts() {
-    const product = await this.productModel.findAll();
+    const product = await this.productModel.findAll({
+      include: [
+        { model: Review, required: false },
+        { model: Features, required: false },
+      ],
+    });
 
     if (product) {
       productsYesterday = dayProducts;
@@ -106,12 +111,12 @@ export class ProductService {
       for (let i = 0; i < 5; i++) {
         const ind = Math.floor(Math.random() * p.length);
         const item = p[ind];
+        console.log(item);
         if (item.oldPrice > 0) {
           dayProducts.push(p.splice(ind, 1)[0]);
-          console.log(dayProducts);
-          return dayProducts;
         }
       }
+      return dayProducts;
     }
 
     return {
