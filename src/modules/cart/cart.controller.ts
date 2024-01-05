@@ -37,6 +37,7 @@ export class CartController {
     @Req() request: { user: UserDto },
   ): Promise<Cart | { message: string }> {
     const userId = request.user.id;
+    console.log(userId, addToCart);
 
     return this.cartService.add(addToCart, userId);
   }

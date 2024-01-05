@@ -81,7 +81,11 @@ export class CartService {
     );
 
     if (productIncludes) {
-      return { message: AppMessage.ITEM_ALREADY_IN_THE_CART };
+      // return {
+      //   message: AppMessage.ITEM_ALREADY_IN_THE_CART,
+      //   products: exitingShoppingCart,
+      // };
+      return exitingShoppingCart;
     }
 
     const newProduct: ProductCartDto = {

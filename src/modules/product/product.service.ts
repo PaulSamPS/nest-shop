@@ -186,7 +186,16 @@ export class ProductService {
   }
 
   async getNewProducts() {
-    return await this.productModel.findAll({ where: { new: true } });
+    return await this.productModel.findAll({
+      where: { new: true },
+      include: [
+        {
+          model: Review,
+          required: false,
+        },
+        { model: Features, required: false },
+      ],
+    });
   }
 
   async getTopProducts() {
