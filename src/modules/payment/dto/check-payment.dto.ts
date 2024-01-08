@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 @Injectable()
-export class MakePaymentDto {
-  @ApiProperty({ example: 100 })
+export class CheckPaymentDto {
   @IsNotEmpty()
-  readonly amount: number;
+  readonly paymentId: string;
 }
 
-export class MakePaymentResultDto {
+export class CheckPaymentResultDto {
   id: string;
   status: string;
   amount: {

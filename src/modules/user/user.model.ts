@@ -9,6 +9,7 @@ import {
 import { Profile } from '@/modules/profile/model/profile.model';
 import { Cart } from '@/modules/cart/cart.model';
 import { Review } from '@/modules/review/review.model';
+import { Order } from '@/modules/order/order.model';
 
 @Table
 export class User extends Model {
@@ -50,4 +51,10 @@ export class User extends Model {
     onUpdate: 'CASCADE',
   })
   reviews: Review;
+
+  @HasMany(() => Order, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  orders: Order;
 }

@@ -24,7 +24,7 @@ export class Review extends Model {
   @Column
   lastName: string;
 
-  @Column
+  @Column({ defaultValue: 0 })
   rating: number;
 
   @Column({ type: DataType.TEXT })

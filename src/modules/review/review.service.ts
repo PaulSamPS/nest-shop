@@ -64,6 +64,7 @@ export class ReviewService {
 
       return review.save();
     }
+    console.log(reviewsDtoCreate.rating);
 
     review.product = reviewsDtoCreate.product;
     review.firstName = reviewsDtoCreate.firstName;

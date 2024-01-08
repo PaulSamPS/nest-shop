@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   Req,
@@ -37,7 +38,6 @@ export class CartController {
     @Req() request: { user: UserDto },
   ): Promise<Cart | { message: string }> {
     const userId = request.user.id;
-    console.log(userId, addToCart);
 
     return this.cartService.add(addToCart, userId);
   }
@@ -64,13 +64,12 @@ export class CartController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('remove-product')
+  @Delete('remove-product/:productId')
   removeOne(
-    @Body() id: { productId: number },
+    @Param('productId') productId: number,
     @Req() request: { user: UserDto },
   ) {
     const userId = request.user.id;
-    const { productId } = id;
 
     return this.cartService.remove(productId, userId);
   }

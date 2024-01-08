@@ -19,6 +19,8 @@ import { ReviewModule } from '@/modules/review/review.module';
 import { Review } from '@/modules/review/review.model';
 import { Product } from '@/modules/product/product.model';
 import { Features } from '@/modules/features/features.model';
+import { Order } from '@/modules/order/order.model';
+import { OrderModule } from '@/modules/order/order.module';
 
 @Module({
   imports: [
@@ -38,7 +40,7 @@ import { Features } from '@/modules/features/features.model';
           charset: 'utf8',
           collate: 'utf8_general_ci',
         },
-        models: [User, Profile, Cart, Review, Product, Features],
+        models: [User, Profile, Cart, Review, Product, Features, Order],
       }),
     }),
     ConfigModule.forRoot({
@@ -57,6 +59,7 @@ import { Features } from '@/modules/features/features.model';
     ProfileModule,
     FeaturesModule,
     ReviewModule,
+    OrderModule,
   ],
 })
 export class AppModule {}
