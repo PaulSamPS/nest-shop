@@ -32,11 +32,11 @@ export class OrderController {
   getAllUserOrders(@Req() request: { user: UserDto }) {
     const userId = request.user.id;
 
-    // return this.orderService.userOrders(userId);
+    return this.orderService.userOrders(userId);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/get/:orderId')
+  @Get('/:orderId')
   getUserOrder(
     @Req() request: { user: UserDto },
     @Param('orderId') orderId: string,

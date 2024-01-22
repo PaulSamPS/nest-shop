@@ -35,7 +35,7 @@ export class PaymentService {
           capture: true,
           confirmation: {
             type: 'redirect',
-            return_url: 'http://localhost:3000/order',
+            return_url: 'http://localhost:3000/order/success',
           },
           description: 'Тестовый заказ',
         },
