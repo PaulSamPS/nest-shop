@@ -30,9 +30,11 @@ export class OrderService {
 
   async userOrders(userId: number) {
     // const status = await this.paymentService.checkPaymentStatus(checkOrdersDto.);
-    return await this.orderModel.findAll({
+    const orders = await this.orderModel.findAll({
       where: { user: userId },
     });
+
+    return orders.reverse();
   }
 
   async getUserOrder(paymentId: string, userId: number) {
@@ -40,12 +42,9 @@ export class OrderService {
     const order = await this.orderModel.findOne({
       where: { orderId: paymentId, user: userId },
     });
-    console.log(status);
 
-    if (order.status !== 'succeeded') {
-      order.status = status.status;
-      await order.save();
-    }
+    order.status = status.status;
+    await order.save();
 
     return order;
   }

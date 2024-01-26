@@ -21,7 +21,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async login(authUserDto: AuthUserDto): Promise<LoginResultDto> {
+  async login(authUserDto: AuthUserDto) {
     const existUser = await this.userService.findOne({
       where: { email: authUserDto.email },
     });
@@ -53,6 +53,7 @@ export class AuthService {
       where: { email: existUser.email },
     });
     const token = await this.tokenService.generateJwtToken(user);
+    // return await this.tokenService.generateJwtToken(user);
 
     return {
       user,

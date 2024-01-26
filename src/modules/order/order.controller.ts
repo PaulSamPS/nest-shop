@@ -20,17 +20,17 @@ export class OrderController {
   @Post('/create')
   makePayment(
     @Body() createOrderDto: CreateOrderDto,
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ) {
-    const userId = request.user.id;
+    const userId = request.user.user.id;
 
     return this.orderService.create(createOrderDto, userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/get')
-  getAllUserOrders(@Req() request: { user: UserDto }) {
-    const userId = request.user.id;
+  getAllUserOrders(@Req() request: { user: { user: UserDto } }) {
+    const userId = request.user.user.id;
 
     return this.orderService.userOrders(userId);
   }
@@ -38,10 +38,10 @@ export class OrderController {
   @UseGuards(JwtAuthGuard)
   @Get('/:orderId')
   getUserOrder(
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
     @Param('orderId') orderId: string,
   ) {
-    const userId = request.user.id;
+    const userId = request.user.user.id;
 
     return this.orderService.getUserOrder(orderId, userId);
   }

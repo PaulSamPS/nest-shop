@@ -5,10 +5,11 @@ import { Cart } from './cart.model';
 import { UserModule } from '@/modules/user';
 import { ProductModule } from '@/modules/product';
 import { CartController } from './cart.controller';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [SequelizeModule.forFeature([Cart]), UserModule, ProductModule],
   controllers: [CartController],
-  providers: [CartService],
+  providers: [CartService, JwtService],
 })
 export class CartModule {}

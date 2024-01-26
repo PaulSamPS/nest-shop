@@ -8,7 +8,9 @@ import {
   Param,
   Post,
   Redirect,
+  Req,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
@@ -18,6 +20,8 @@ import { AppMessage } from '@/common/constants/appMessage';
 import { TokenService } from '@/modules/token/token.service';
 import { JwtAuthGuard } from '@/guards/jwt.guard';
 import { AuthUserDto } from '@/modules/auth/dto/authUserDto';
+import { Response } from 'express';
+import { UserDto } from '@/modules/user/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -41,20 +45,41 @@ export class AuthController {
 
   @Post('sign-in')
   @HttpCode(HttpStatus.OK)
-  login(@Body() authUserDto: AuthUserDto) {
-    console.log(authUserDto);
-    return this.authServices.login(authUserDto);
+  async login(
+    @Body() authUserDto: AuthUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { message, token, user } = await this.authServices.login(authUserDto);
+    res.cookie('auth', token, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: true,
+      secure: false,
+    });
+
+    return { user, message };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('check')
-  check() {
-    return true;
+  async check(
+    @Res({ passthrough: true }) res: Response,
+    @Req() request: { user: UserDto },
+  ) {
+    try {
+      const user = request.user;
+      await this.tokenService.generateJwtToken(user);
+      return user;
+    } catch (e) {
+      return false;
+    }
   }
 
   @Get('/logout')
-  logout(@Request() req): { message: string } {
-    req.session.destroy();
+  logout(@Res({ passthrough: true }) res: Response): { message: string } {
+    res.clearCookie('auth', {
+      httpOnly: true,
+      secure: false,
+    });
     return { message: AppMessage.SESSION_HAS_ENDED };
   }
 }

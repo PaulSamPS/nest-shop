@@ -3,10 +3,7 @@ import { MakePaymentDto, MakePaymentResultDto } from './dto/make-payment.dto';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
-import {
-  CheckPaymentDto,
-  CheckPaymentResultDto,
-} from '@/modules/payment/dto/check-payment.dto';
+import { CheckPaymentResultDto } from '@/modules/payment/dto/check-payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -35,7 +32,7 @@ export class PaymentService {
           capture: true,
           confirmation: {
             type: 'redirect',
-            return_url: 'http://localhost:3000/order/success',
+            return_url: `http://localhost:3000/order/success`,
           },
           description: 'Тестовый заказ',
         },

@@ -24,8 +24,9 @@ export class CartController {
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [GetAllResponse] })
   @Get('get')
-  get(@Req() request: { user: UserDto }): Promise<Cart> {
-    const userId: number = request.user.id;
+  get(@Req() request: { user: { user: UserDto } }): Promise<Cart> {
+    const userId: number = request.user.user.id;
+    console.log(userId);
 
     return this.cartService.get(userId);
   }
@@ -35,9 +36,9 @@ export class CartController {
   @Post('add-product')
   addToCart(
     @Body() addToCart: AddToCartDto,
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ): Promise<Cart | { message: string }> {
-    const userId = request.user.id;
+    const userId = request.user.user.id;
 
     return this.cartService.add(addToCart, userId);
   }
@@ -46,9 +47,9 @@ export class CartController {
   @Patch('increase-count')
   increaseCountAndTotalPrice(
     @Body() addToCart: AddToCartDto,
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ): Promise<Cart> {
-    const userId = request.user.id;
+    const userId = request.user.user.id;
 
     return this.cartService.increaseCountAndTotalPrice(addToCart, userId);
   }
@@ -56,9 +57,9 @@ export class CartController {
   @Patch('decrease-count')
   decreaseCountAndTotalPrice(
     @Body() addToCart: AddToCartDto,
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ): Promise<Cart> {
-    const userId = request.user.id;
+    const userId = request.user.user.id;
 
     return this.cartService.decreaseCountAndTotalPrice(addToCart, userId);
   }
@@ -67,17 +68,17 @@ export class CartController {
   @Delete('remove-product/:productId')
   removeOne(
     @Param('productId') productId: number,
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ) {
-    const userId = request.user.id;
+    const userId = request.user.user.id;
 
     return this.cartService.remove(productId, userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('remove-all')
-  removeAll(@Req() request: { user: UserDto }): Promise<Cart> {
-    const userId = request.user.id;
+  removeAll(@Req() request: { user: { user: UserDto } }): Promise<Cart> {
+    const userId = request.user.user.id;
 
     return this.cartService.removeAll(userId);
   }

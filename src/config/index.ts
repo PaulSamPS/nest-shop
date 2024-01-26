@@ -12,4 +12,5 @@ export default () => ({
   secret_jwt: process.env.SECRET_JWT,
   expired_jwt: process.env.EXPIRED_JWT,
   base_url: process.env.BASE_URL,
+  secret_cookie: process.env.SECRET_COOKIE,
 });
