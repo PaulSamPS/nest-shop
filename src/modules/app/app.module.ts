@@ -22,6 +22,7 @@ import { Features } from '@/modules/features/features.model';
 import { Order } from '@/modules/order/order.model';
 import { OrderModule } from '@/modules/order/order.module';
 import { JwtService } from '@nestjs/jwt';
+import { DayProductsModule } from '@/modules/day-products/day-products.module';
 
 @Module({
   imports: [
@@ -61,7 +62,7 @@ import { JwtService } from '@nestjs/jwt';
     FeaturesModule,
     ReviewModule,
     OrderModule,
+    DayProductsModule,
   ],
-  providers: [JwtService],
 })
 export class AppModule {}

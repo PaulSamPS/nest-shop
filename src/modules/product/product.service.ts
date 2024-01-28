@@ -8,8 +8,6 @@ import { FileElementResponse } from '@/modules/files/dto/file-element-response.r
 import { Review } from '@/modules/review/review.model';
 import { Features } from '@/modules/features/features.model';
 
-let dayProducts: Product[] = [];
-let productsYesterday: Product[] = [];
 @Injectable()
 export class ProductService {
   constructor(
@@ -55,6 +53,15 @@ export class ProductService {
 
   async findOneByiD(id: number | string): Promise<Product> {
     return this.productModel.findOne({ where: { id } });
+  }
+
+  async findAllWithReviewAndFeatures(): Promise<Product[]> {
+    return this.productModel.findAll({
+      include: [
+        { model: Review, required: false },
+        { model: Features, required: false },
+      ],
+    });
   }
 
   async searchByString(
@@ -150,39 +157,6 @@ export class ProductService {
     }
 
     return existingByUserName.save();
-  }
-
-  async setDayProducts() {
-    const product = await this.productModel.findAll({
-      include: [
-        { model: Review, required: false },
-        { model: Features, required: false },
-      ],
-    });
-
-    if (product) {
-      productsYesterday = dayProducts;
-      dayProducts = [];
-      const p = product.map((i) => i);
-      for (let i = 0; i < 5; i++) {
-        const ind = Math.floor(Math.random() * p.length);
-        const item = p[ind];
-
-        if (item && item.oldPrice > 0) {
-          dayProducts.push(p.splice(ind, 1)[0]);
-        }
-      }
-      return dayProducts;
-    }
-
-    return {
-      message: 'Продукты не найдены',
-      status: HttpStatus.CONFLICT,
-    };
-  }
-
-  async getDayProducts() {
-    return dayProducts;
   }
 
   async getNewProducts() {

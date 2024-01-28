@@ -122,16 +122,6 @@ export class ProductController {
     return this.productService.findOneByName(name);
   }
 
-  @Get('day-products/set')
-  setDayProducts() {
-    return this.productService.setDayProducts();
-  }
-
-  @Get('day-products/get')
-  getDayProducts() {
-    return this.productService.getDayProducts();
-  }
-
   @Get('new/get-main')
   getNewProducts() {
     return this.productService.getNewProducts();

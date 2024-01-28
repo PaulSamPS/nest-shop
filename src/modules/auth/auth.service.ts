@@ -8,7 +8,6 @@ import { MailService } from '@/modules/mail/mail.service';
 import { AppError } from '@/common/constants/appError';
 import { AppMessage } from '@/common/constants/appMessage';
 import { TokenService } from '@/modules/token/token.service';
-import { LoginResultDto } from '@/modules/auth/types/loginResult';
 import { ConfigService } from '@nestjs/config';
 import { AuthUserDto } from '@/modules/auth/dto/authUserDto';
 
