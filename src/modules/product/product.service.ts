@@ -51,6 +51,19 @@ export class ProductService {
     });
   }
 
+  async findAllByCategory(category: string): Promise<Product[]> {
+    return this.productModel.findAll({
+      where: { category },
+      include: [
+        {
+          model: Review,
+          required: false,
+        },
+        { model: Features, required: false },
+      ],
+    });
+  }
+
   async findOneByiD(id: number | string): Promise<Product> {
     return this.productModel.findOne({ where: { id } });
   }
@@ -188,6 +201,19 @@ export class ProductService {
     });
 
     if (products.length <= 0) {
+      return {
+        message: 'Продукты не найдены',
+        status: HttpStatus.CONFLICT,
+      };
+    }
+
+    return products;
+  }
+
+  async getProductsByCategory(category: string) {
+    const products = await this.findAllByCategory(category);
+
+    if (!products) {
       return {
         message: 'Продукты не найдены',
         status: HttpStatus.CONFLICT,

@@ -131,4 +131,10 @@ export class ProductController {
   async topProducts() {
     return await this.productService.getTopProducts();
   }
+
+  @Get('/category/:category')
+  getProductsByCategory(@Param('category') category: string) {
+    console.log(category);
+    return this.productService.getProductsByCategory(category);
+  }
 }

@@ -5,4 +5,5 @@ export class ProductCartDto {
   in_stock: number;
   image: string;
   count: number;
+  category: string;
 }

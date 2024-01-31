@@ -66,6 +66,7 @@ export class CartService {
             price: product.price,
             in_stock: product.in_stock - 1,
             image: product.images[0].url,
+            category: product.category,
             count: 1,
           },
         ],
@@ -93,6 +94,7 @@ export class CartService {
       price: product.price,
       in_stock: product.in_stock - 1,
       image: product.images[0].url,
+      category: product.category,
       count: 1,
     };
 
