@@ -21,8 +21,8 @@ import { Product } from '@/modules/product/product.model';
 import { Features } from '@/modules/features/features.model';
 import { Order } from '@/modules/order/order.model';
 import { OrderModule } from '@/modules/order/order.module';
-import { JwtService } from '@nestjs/jwt';
 import { DayProductsModule } from '@/modules/day-products/day-products.module';
+import { SharesModule } from '@/modules/shares/shares.module';
 
 @Module({
   imports: [
@@ -63,6 +63,7 @@ import { DayProductsModule } from '@/modules/day-products/day-products.module';
     ReviewModule,
     OrderModule,
     DayProductsModule,
+    SharesModule,
   ],
 })
 export class AppModule {}
