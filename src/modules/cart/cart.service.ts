@@ -30,7 +30,18 @@ export class CartService {
       return null;
     }
 
-    return exitingShoppingCart;
+    exitingShoppingCart.total_price = 0;
+    for (let i = 0; i < exitingShoppingCart.products.length; i++) {
+      const product = await this.productsService.findOneByiD(
+        exitingShoppingCart.products[i].productId,
+      );
+      exitingShoppingCart.products[i].price = product.price;
+      exitingShoppingCart.total_price +=
+        product.price * exitingShoppingCart.products[i].count;
+    }
+    exitingShoppingCart.changed('products', true);
+
+    return await exitingShoppingCart.save();
   }
 
   async add(
