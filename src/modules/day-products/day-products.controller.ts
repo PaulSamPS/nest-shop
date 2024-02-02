@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { DayProductsService } from '@/modules/day-products/day-products.service';
 
 @Controller('day-products')
@@ -18,5 +18,16 @@ export class DayProductsController {
   @Get('/get')
   getDayProducts() {
     return this.dayProductsService.getDayProducts();
+  }
+
+  @Get('/get/:productName')
+  getOneDayProducts(@Param('productName') productName: string) {
+    console.log(productName);
+    return this.dayProductsService.getOneDayProducts(productName);
+  }
+
+  @Get('/yesterday/get')
+  getYesterdayProducts() {
+    return this.dayProductsService.getYesterdayProducts();
   }
 }

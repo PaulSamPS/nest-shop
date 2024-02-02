@@ -1,10 +1,7 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { DayProducts } from '@/modules/day-products/day-products.model';
-import { Product } from '@/modules/product/product.model';
 import { ProductService } from '@/modules/product';
-import { Review } from '@/modules/review/review.model';
-import { Features } from '@/modules/features/features.model';
 
 // let dayProducts: Product[] = [];
 @Injectable()
@@ -28,23 +25,25 @@ export class DayProductsService {
       return await dayProductsModel.save();
     }
     const dayProducts = [];
-    const percent = [10, 5, 15, 20];
+    const percent = [10, 15, 20];
     const p = product.map((i) => i);
-    for (let i = 0; i < 3; i++) {
-      const ind = Math.floor(Math.random() * p.length);
+    for (let i = 0; dayProducts.length < 3; i++) {
+      const ind = Math.trunc(Math.random() * p.length);
       const item = p[ind];
       const newProduct = product.find((p) => p.id === item.id);
       const discount = percent[Math.floor(Math.random() * percent.length)];
-      newProduct.discount = discount;
-      newProduct.oldPrice = item.price;
-      newProduct.price = item.price - (item.price / 100) * discount;
-      await newProduct.save();
-
-      if (item && item.discount > 0) {
+      const includeItems = existingDayProducts.productsYesterday.some(
+        (o) => o.id === item.id,
+      );
+      if (!includeItems) {
+        newProduct.discount = discount;
+        newProduct.oldPrice = item.price;
+        newProduct.price = item.price - (item.price / 100) * discount;
+        await newProduct.save();
         dayProducts.push(p.splice(ind, 1)[0]);
       }
+      existingDayProducts.dayProducts = dayProducts;
     }
-    existingDayProducts.dayProducts = dayProducts;
     return await existingDayProducts.save();
   }
 
@@ -57,7 +56,6 @@ export class DayProductsService {
     for (let i = 0; i < 3; i++) {
       const item = productsYesterday[i].id;
       const newProduct = product.find((p) => p.id === item);
-      console.log(newProduct.id);
       newProduct.price = productsYesterday[i].oldPrice;
       newProduct.discount = 0;
       newProduct.oldPrice = 0;
@@ -66,6 +64,17 @@ export class DayProductsService {
     return await existingDayProducts.save();
   }
   async getDayProducts() {
-    return await this.dayProductsModel.findOne();
+    const products = await this.dayProductsModel.findOne();
+    return products.dayProducts;
+  }
+
+  async getOneDayProducts(productName: string) {
+    const products = await this.dayProductsModel.findOne();
+    return products.dayProducts.find((product) => product.name === productName);
+  }
+
+  async getYesterdayProducts() {
+    const products = await this.dayProductsModel.findOne();
+    return products.productsYesterday;
   }
 }
