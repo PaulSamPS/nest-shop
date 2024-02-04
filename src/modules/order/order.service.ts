@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Order } from '@/modules/order/order.model';
 import { PaymentService } from '@/modules/payment/payment.service';
 import { CreateOrderDto } from '@/modules/order/dto/createOrder.dto';
-import { CheckOrdersDto } from '@/modules/order/dto/checkOrders.dto';
 
 @Injectable()
 export class OrderService {
@@ -21,6 +20,7 @@ export class OrderService {
       products: createOrderDto.products,
       total_price: createOrderDto.amount,
       user: userId,
+      userInfo: createOrderDto.userInfo,
     };
 
     await this.orderModel.create(newOrder);

@@ -33,9 +33,9 @@ export class ProfileController {
   @UseInterceptors(FilesInterceptor('avatar'))
   async update(
     @Body() profileDto: ProfileDto,
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ): Promise<Profile> {
-    const user = request.user;
+    const user = request.user.user;
 
     return this.profileService.update(user.id, profileDto);
   }
@@ -45,9 +45,9 @@ export class ProfileController {
   @UseInterceptors(FilesInterceptor('avatar'))
   async updateAvatar(
     @UploadedFiles() file: Express.Multer.File[],
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ) {
-    const user = request.user;
+    const user = request.user.user;
 
     await this.fileService.removeFile(user.username);
     const imagesArr: MFile = await this.fileService.convertToWebpOne(file);
@@ -59,8 +59,8 @@ export class ProfileController {
 
   @UseGuards(JwtAuthGuard)
   @Get('get')
-  async getProfile(@Req() request: { user: UserDto }) {
-    const user = request.user;
+  async getProfile(@Req() request: { user: { user: UserDto } }) {
+    const user = request.user.user;
 
     return await this.profileService.get(user.id);
   }
@@ -70,9 +70,9 @@ export class ProfileController {
   @UseInterceptors(FilesInterceptor('avatar'))
   async deleteAvatar(
     @UploadedFiles() file: Express.Multer.File[],
-    @Req() request: { user: UserDto },
+    @Req() request: { user: { user: UserDto } },
   ) {
-    const user = request.user;
+    const user = request.user.user;
 
     await this.fileService.removeFile(user.username);
 

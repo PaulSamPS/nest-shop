@@ -22,6 +22,12 @@ export class Profile extends Model {
   lastname: string;
 
   @Column
+  middleName: string;
+
+  @Column
+  phoneNumber: string;
+
+  @Column
   country: string;
 
   @Column

@@ -11,7 +11,7 @@ export class ProfileDto {
   lastname: string;
 
   @IsString()
-  country: string;
+  middleName: string;
 
   @IsString()
   region: string;
@@ -21,6 +21,9 @@ export class ProfileDto {
 
   @IsString()
   address: string;
+
+  @IsString()
+  phoneNumber: string;
 
   @IsString()
   oldAvatar: string;

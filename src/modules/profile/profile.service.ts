@@ -19,9 +19,11 @@ export class ProfileService {
         user: userId,
         firstname: profileDto.firstname,
         lastname: profileDto.lastname,
-        country: profileDto.country,
+        middleName: profileDto.middleName,
+        phoneNumber: profileDto.phoneNumber,
         region: profileDto.region,
         city: profileDto.city,
+        address: profileDto.address,
       };
 
       return await this.profileModel.create(newProfile);
@@ -29,7 +31,8 @@ export class ProfileService {
 
     existingProfile.firstname = profileDto.firstname;
     existingProfile.lastname = profileDto.lastname;
-    existingProfile.country = profileDto.country;
+    existingProfile.middleName = profileDto.middleName;
+    existingProfile.phoneNumber = profileDto.phoneNumber;
     existingProfile.region = profileDto.region;
     existingProfile.city = profileDto.city;
     existingProfile.address = profileDto.address;
@@ -48,6 +51,8 @@ export class ProfileService {
         user: userId,
         firstname: null,
         lastname: null,
+        middleName: null,
+        phoneNumber: null,
         avatar: file,
         country: null,
         region: null,

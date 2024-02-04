@@ -22,4 +22,11 @@ export class Order extends Model {
 
   @Column
   orderId: string;
+
+  @Column({
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: [],
+  })
+  userInfo;
 }
