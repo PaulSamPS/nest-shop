@@ -23,6 +23,8 @@ import { Order } from '@/modules/order/order.model';
 import { OrderModule } from '@/modules/order/order.module';
 import { DayProductsModule } from '@/modules/day-products/day-products.module';
 import { SharesModule } from '@/modules/shares/shares.module';
+import { FavouritesModule } from '@/modules/favourites/favourites.module';
+import { Favourites } from '@/modules/favourites/favourites.model';
 
 @Module({
   imports: [
@@ -42,7 +44,16 @@ import { SharesModule } from '@/modules/shares/shares.module';
           charset: 'utf8',
           collate: 'utf8_general_ci',
         },
-        models: [User, Profile, Cart, Review, Product, Features, Order],
+        models: [
+          User,
+          Profile,
+          Cart,
+          Review,
+          Product,
+          Features,
+          Order,
+          Favourites,
+        ],
       }),
     }),
     ConfigModule.forRoot({
@@ -64,6 +75,7 @@ import { SharesModule } from '@/modules/shares/shares.module';
     OrderModule,
     DayProductsModule,
     SharesModule,
+    FavouritesModule,
   ],
 })
 export class AppModule {}

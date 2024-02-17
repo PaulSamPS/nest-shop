@@ -3,9 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Shares } from '@/modules/shares/shares.model';
 import { FileElementResponse } from '@/modules/files/dto/file-element-response.response';
 import { SharesDto } from '@/modules/shares/dto/shares.dto';
-import { Product } from '@/modules/product/product.model';
-import { Review } from '@/modules/review/review.model';
-import { Features } from '@/modules/features/features.model';
 
 @Injectable()
 export class SharesService {

@@ -25,8 +25,11 @@ export class DayProductsService {
       return await dayProductsModel.save();
     }
     const dayProducts = [];
+    // размер скидки
     const percent = [10, 15, 20];
+
     const p = product.map((i) => i);
+
     for (let i = 0; dayProducts.length < 3; i++) {
       const ind = Math.trunc(Math.random() * p.length);
       const item = p[ind];
