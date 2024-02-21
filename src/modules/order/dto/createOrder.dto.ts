@@ -5,6 +5,7 @@ import { ProfileDto } from '@/modules/profile/dto/profile.dto';
 export class CreateOrderDto {
   @IsNotEmpty()
   readonly amount: number;
+  readonly discount: number;
   readonly products: ProductCartDto[];
   readonly userInfo: ProfileDto;
 }

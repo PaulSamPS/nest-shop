@@ -19,6 +19,7 @@ export class OrderService {
       orderId: payment.id,
       products: createOrderDto.products,
       total_price: createOrderDto.amount,
+      discount: createOrderDto.discount,
       user: userId,
       userInfo: createOrderDto.userInfo,
     };

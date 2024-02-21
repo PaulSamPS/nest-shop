@@ -3,7 +3,6 @@ import { PaymentService } from './payment.service';
 import { MakePaymentDto } from './dto/make-payment.dto';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { MakePaymentResponse } from './types';
-import { CheckPaymentDto } from '@/modules/payment/dto/check-payment.dto';
 import { JwtAuthGuard } from '@/guards/jwt.guard';
 
 @Controller('payment')

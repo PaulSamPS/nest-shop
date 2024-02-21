@@ -16,4 +16,7 @@ export class Cart extends Model {
 
   @Column({ defaultValue: 0 })
   total_price: number;
+
+  @Column({ defaultValue: 0 })
+  discount: number;
 }

@@ -5,6 +5,7 @@ import { FavouritesDto } from '@/modules/favourites/dto/favourites.dto';
 import { FavouritesProductDto } from '@/modules/favourites/dto/favouritesProduct.dto';
 import { Product } from '@/modules/product/product.model';
 import { ProductService } from '@/modules/product';
+import { ProductCartDto } from '@/modules/cart/dto/productCart.dto';
 
 @Injectable()
 export class FavouritesService {
@@ -42,7 +43,11 @@ export class FavouritesService {
       favouritesDto.productId,
     );
 
-    if (!exitingFavourites) {
+    const productIncludes: boolean = exitingFavourites.products.some(
+      (p: ProductCartDto) => p.productId === product.id,
+    );
+
+    if (!exitingFavourites && !productIncludes) {
       const newFavourites: {
         user: number;
         products: FavouritesProductDto[];

@@ -26,7 +26,6 @@ export class CartController {
   @Get('get')
   get(@Req() request: { user: { user: UserDto } }): Promise<Cart> {
     const userId: number = request.user.user.id;
-    console.log(userId);
 
     return this.cartService.get(userId);
   }
