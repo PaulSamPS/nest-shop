@@ -30,25 +30,25 @@ export class CartService {
       return null;
     }
 
-    exitingShoppingCart.total_price = 0;
+    // exitingShoppingCart.total_price = 0;
+    //
+    // for (let i = 0; i < exitingShoppingCart.products.length; i++) {
+    //   const product = await this.productsService.findOneByiD(
+    //     exitingShoppingCart.products[i].productId,
+    //   );
+    //   exitingShoppingCart.products[i].price = product.price;
+    //   exitingShoppingCart.total_price +=
+    //     product.price * exitingShoppingCart.products[i].count;
+    //   exitingShoppingCart.discount =
+    //     product.oldPrice > 0
+    //       ? (product.oldPrice - product.price) *
+    //         exitingShoppingCart.products[i].count
+    //       : 0;
+    // }
+    //
+    // exitingShoppingCart.changed('products', true);
 
-    for (let i = 0; i < exitingShoppingCart.products.length; i++) {
-      const product = await this.productsService.findOneByiD(
-        exitingShoppingCart.products[i].productId,
-      );
-      exitingShoppingCart.products[i].price = product.price;
-      exitingShoppingCart.total_price +=
-        product.price * exitingShoppingCart.products[i].count;
-      exitingShoppingCart.discount +=
-        product.oldPrice > 0
-          ? (product.oldPrice - product.price) *
-            exitingShoppingCart.products[i].count
-          : 0;
-    }
-
-    exitingShoppingCart.changed('products', true);
-
-    return await exitingShoppingCart.save();
+    return exitingShoppingCart;
   }
 
   async add(
