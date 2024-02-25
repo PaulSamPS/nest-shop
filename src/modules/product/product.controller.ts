@@ -83,9 +83,7 @@ export class ProductController {
 
   @ApiOkResponse({ type: PaginateAndFilters })
   @Get()
-  paginateAndFilter(
-    @Query() query,
-  ): Promise<{ count: number; rows: Product[] }> {
+  getAll(@Query() query): Promise<{ count: number; rows: Product[] }> {
     return this.productService.paginateAndFilter(query);
   }
 
@@ -133,7 +131,6 @@ export class ProductController {
 
   @Get('/category/:category')
   getProductsByCategory(@Param('category') category: string) {
-    console.log(category);
     return this.productService.getProductsByCategory(category);
   }
 }

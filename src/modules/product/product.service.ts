@@ -20,6 +20,7 @@ export class ProductService {
   ): Promise<{ count: number; rows: Product[] }> {
     const limit: number = +query.limit;
     const offset: number = +query.offset;
+    console.log(limit);
     return this.productModel.findAndCountAll({
       limit,
       offset,
@@ -80,9 +81,9 @@ export class ProductService {
   async searchByString(
     str: string,
   ): Promise<{ count: number; rows: Product[] }> {
-    return this.productModel.findAndCountAll({
+    return await this.productModel.findAndCountAll({
       limit: 20,
-      where: { name: { [Op.like]: `%${str}%` } },
+      where: { name: { [Op.iLike]: `%${str}%` } },
     });
   }
 

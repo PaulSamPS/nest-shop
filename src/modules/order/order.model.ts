@@ -18,6 +18,9 @@ export class Order extends Model {
   total_price: number;
 
   @Column
+  discount: number;
+
+  @Column
   status: string;
 
   @Column
